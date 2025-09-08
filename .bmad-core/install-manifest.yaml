@@ -1,0 +1,644 @@
+version: 4.42.1
+installed_at: '2025-09-02T05:48:53.596Z'
+install_type: full
+agent: null
+ides_setup:
+  - kilo
+  - gemini
+  - crush
+expansion_packs:
+  - bmad-2d-phaser-game-dev
+  - bmad-2d-unity-game-dev
+  - bmad-creative-writing
+  - bmad-infrastructure-devops
+files:
+  - path: .bmad-core/working-in-the-brownfield.md
+    hash: de000e05b2989f61
+    modified: false
+  - path: .bmad-core/user-guide.md
+    hash: cf405ca8769b1300
+    modified: false
+  - path: .bmad-core/enhanced-ide-development-workflow.md
+    hash: c25b8019c3e5f9f5
+    modified: false
+  - path: .bmad-core/core-config.yaml
+    hash: 073cf6d2527c545d
+    modified: false
+  - path: .bmad-core/utils/workflow-management.md
+    hash: 8f9526717cfa6263
+    modified: false
+  - path: .bmad-core/utils/bmad-doc-template.md
+    hash: bafd22330222d0db
+    modified: false
+  - path: .bmad-core/workflows/greenfield-ui.yaml
+    hash: aaa57de3c7439f51
+    modified: false
+  - path: .bmad-core/workflows/greenfield-service.yaml
+    hash: dc89ae8d72f51d21
+    modified: false
+  - path: .bmad-core/workflows/greenfield-fullstack.yaml
+    hash: c66b07c547470470
+    modified: false
+  - path: .bmad-core/workflows/brownfield-ui.yaml
+    hash: 04dd4c8962cd18e7
+    modified: false
+  - path: .bmad-core/workflows/brownfield-service.yaml
+    hash: 20b2e257de9354e5
+    modified: false
+  - path: .bmad-core/workflows/brownfield-fullstack.yaml
+    hash: 78b9d29877996c82
+    modified: false
+  - path: .bmad-core/templates/story-tmpl.yaml
+    hash: 8d968802aba40e63
+    modified: false
+  - path: .bmad-core/templates/qa-gate-tmpl.yaml
+    hash: 743b30b2d2d22542
+    modified: false
+  - path: .bmad-core/templates/project-brief-tmpl.yaml
+    hash: 6acbb5e502aa2383
+    modified: false
+  - path: .bmad-core/templates/prd-tmpl.yaml
+    hash: 3a936f3533d5e035
+    modified: false
+  - path: .bmad-core/templates/market-research-tmpl.yaml
+    hash: 9080b082f7c22ebc
+    modified: false
+  - path: .bmad-core/templates/fullstack-architecture-tmpl.yaml
+    hash: 04ce0cf7a233ebec
+    modified: false
+  - path: .bmad-core/templates/front-end-spec-tmpl.yaml
+    hash: fc373f3dfabc2293
+    modified: false
+  - path: .bmad-core/templates/front-end-architecture-tmpl.yaml
+    hash: fc8e7adaa1d7f40d
+    modified: false
+  - path: .bmad-core/templates/competitor-analysis-tmpl.yaml
+    hash: bc0fc5510e73a4b7
+    modified: false
+  - path: .bmad-core/templates/brownfield-prd-tmpl.yaml
+    hash: c0c3dd64ccbcb5ab
+    modified: false
+  - path: .bmad-core/templates/brownfield-architecture-tmpl.yaml
+    hash: a2607cdb24ba3198
+    modified: false
+  - path: .bmad-core/templates/brainstorming-output-tmpl.yaml
+    hash: d2a6cbc7bef157f3
+    modified: false
+  - path: .bmad-core/templates/architecture-tmpl.yaml
+    hash: 3b941d1b05bd6a14
+    modified: false
+  - path: .bmad-core/tasks/validate-next-story.md
+    hash: 9d210935389a7140
+    modified: false
+  - path: .bmad-core/tasks/trace-requirements.md
+    hash: baf845a19fbfe41c
+    modified: false
+  - path: .bmad-core/tasks/test-design.md
+    hash: f67591d4c805d894
+    modified: false
+  - path: .bmad-core/tasks/shard-doc.md
+    hash: fdf6718cd2aeaae7
+    modified: false
+  - path: .bmad-core/tasks/risk-profile.md
+    hash: 113d504e8ace292c
+    modified: false
+  - path: .bmad-core/tasks/review-story.md
+    hash: 24d689a518a10f01
+    modified: false
+  - path: .bmad-core/tasks/qa-gate.md
+    hash: 062167dfcd9e145c
+    modified: false
+  - path: .bmad-core/tasks/nfr-assess.md
+    hash: b19e676b4ff3f398
+    modified: false
+  - path: .bmad-core/tasks/kb-mode-interaction.md
+    hash: 7470b07afc364cb6
+    modified: false
+  - path: .bmad-core/tasks/index-docs.md
+    hash: c87fcefe5f09e297
+    modified: false
+  - path: .bmad-core/tasks/generate-ai-frontend-prompt.md
+    hash: e04831c4ebbe958b
+    modified: false
+  - path: .bmad-core/tasks/facilitate-brainstorming-session.md
+    hash: b1aee58b640f65ab
+    modified: false
+  - path: .bmad-core/tasks/execute-checklist.md
+    hash: 93d051eee5dea60c
+    modified: false
+  - path: .bmad-core/tasks/document-project.md
+    hash: 3ea204e67bf62d5a
+    modified: false
+  - path: .bmad-core/tasks/create-next-story.md
+    hash: a94a5db68e2b14bc
+    modified: false
+  - path: .bmad-core/tasks/create-doc.md
+    hash: 7222f15800b43f06
+    modified: false
+  - path: .bmad-core/tasks/create-deep-research-prompt.md
+    hash: 0fb4d8adab2f7c69
+    modified: false
+  - path: .bmad-core/tasks/create-brownfield-story.md
+    hash: 2ececd8ef3cc27b5
+    modified: false
+  - path: .bmad-core/tasks/correct-course.md
+    hash: 0081e2f5e9894140
+    modified: false
+  - path: .bmad-core/tasks/brownfield-create-story.md
+    hash: bfb994361445d315
+    modified: false
+  - path: .bmad-core/tasks/brownfield-create-epic.md
+    hash: ea89cfcd376973ef
+    modified: false
+  - path: .bmad-core/tasks/apply-qa-fixes.md
+    hash: 8b9458131bb2a05b
+    modified: false
+  - path: .bmad-core/tasks/advanced-elicitation.md
+    hash: add7c0dcc657fa4d
+    modified: false
+  - path: .bmad-core/data/test-priorities-matrix.md
+    hash: c9cbc6ffbc695f4e
+    modified: false
+  - path: .bmad-core/data/test-levels-framework.md
+    hash: 08da05be3ab5062c
+    modified: false
+  - path: .bmad-core/data/technical-preferences.md
+    hash: a1c491adacfe583f
+    modified: false
+  - path: .bmad-core/data/elicitation-methods.md
+    hash: 32076992d7d51d9f
+    modified: false
+  - path: .bmad-core/data/brainstorming-techniques.md
+    hash: 6b064f8f33dd5b69
+    modified: false
+  - path: .bmad-core/data/bmad-kb.md
+    hash: 34fdcb8b3809d115
+    modified: false
+  - path: .bmad-core/agents/ux-expert.md
+    hash: caf97fdb62e8bf69
+    modified: false
+  - path: .bmad-core/agents/sm.md
+    hash: 95f0ef651be2e253
+    modified: false
+  - path: .bmad-core/agents/qa.md
+    hash: '528682183887e620'
+    modified: false
+  - path: .bmad-core/agents/po.md
+    hash: 539e4bf842a7a072
+    modified: false
+  - path: .bmad-core/agents/pm.md
+    hash: c3dc0d55bafbecd3
+    modified: false
+  - path: .bmad-core/agents/dev.md
+    hash: f7a543fc3cc85a78
+    modified: false
+  - path: .bmad-core/agents/bmad-orchestrator.md
+    hash: e36b5804b91be55c
+    modified: false
+  - path: .bmad-core/agents/bmad-master.md
+    hash: 275f4962a5eff558
+    modified: false
+  - path: .bmad-core/agents/architect.md
+    hash: 8af460e44b786c5b
+    modified: false
+  - path: .bmad-core/agents/analyst.md
+    hash: f50c0cd7edd3a187
+    modified: false
+  - path: .bmad-core/agent-teams/team-no-ui.yaml
+    hash: f076baef51b17d65
+    modified: false
+  - path: .bmad-core/agent-teams/team-ide-minimal.yaml
+    hash: 1c3a2b3cc79547ee
+    modified: false
+  - path: .bmad-core/agent-teams/team-fullstack.yaml
+    hash: da93170148300632
+    modified: false
+  - path: .bmad-core/agent-teams/team-all.yaml
+    hash: c8e59dbf648c5e99
+    modified: false
+  - path: .bmad-core/checklists/story-draft-checklist.md
+    hash: 8a09683838c995c4
+    modified: false
+  - path: .bmad-core/checklists/story-dod-checklist.md
+    hash: 0eeeb7a92bc0ee0d
+    modified: false
+  - path: .bmad-core/checklists/po-master-checklist.md
+    hash: 5d14f1b9afbd72de
+    modified: false
+  - path: .bmad-core/checklists/pm-checklist.md
+    hash: 169b98cc6928d7fb
+    modified: false
+  - path: .bmad-core/checklists/change-checklist.md
+    hash: d1e50741ca3fdb96
+    modified: false
+  - path: .bmad-core/checklists/architect-checklist.md
+    hash: f35b1d350aa61ebb
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/agents/game-sm.md
+    hash: 840c39686ba909b5
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/agents/game-developer.md
+    hash: 09dc3370afbfd78d
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/agents/game-designer.md
+    hash: fa0e7237e794cdbe
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/agent-teams/phaser-2d-nodejs-game-team.yaml
+    hash: d7e8ed9615a316ab
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/templates/level-design-doc-tmpl.yaml
+    hash: 2cd5fad93f54c184
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/templates/game-story-tmpl.yaml
+    hash: 2553af42091124a6
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/templates/game-design-doc-tmpl.yaml
+    hash: 646f44a804c2fbe9
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/templates/game-brief-tmpl.yaml
+    hash: 7d2d74ad95e34157
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/templates/game-architecture-tmpl.yaml
+    hash: b1b0bbc8552f1df4
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/tasks/game-design-brainstorming.md
+    hash: 84052668d82a4e6f
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/tasks/create-game-story.md
+    hash: 59b6bf4204a98f46
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/tasks/advanced-elicitation.md
+    hash: 17cb67c78082ff1b
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/checklists/game-story-dod-checklist.md
+    hash: e0411820a5e9881b
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/checklists/game-design-checklist.md
+    hash: 4847bad52837e5f9
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/workflows/game-prototype.yaml
+    hash: 1897224a60d5385f
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/workflows/game-dev-greenfield.yaml
+    hash: 3fe8dbacc636f24b
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/data/development-guidelines.md
+    hash: 27a2caf5367ce6cc
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/data/bmad-kb.md
+    hash: e02b168a0671d18a
+    modified: false
+  - path: .bmad-2d-phaser-game-dev/config.yaml
+    hash: 3a70b0820f1d22f5
+    modified: false
+  - path: .bmad-2d-unity-game-dev/agents/game-sm.md
+    hash: 85f188171b959d83
+    modified: false
+  - path: .bmad-2d-unity-game-dev/agents/game-developer.md
+    hash: 85dd41fb582b6468
+    modified: false
+  - path: .bmad-2d-unity-game-dev/agents/game-designer.md
+    hash: 2396c558cbcaaf96
+    modified: false
+  - path: .bmad-2d-unity-game-dev/agents/game-architect.md
+    hash: 0ed1352e63e65959
+    modified: false
+  - path: .bmad-2d-unity-game-dev/agent-teams/unity-2d-game-team.yaml
+    hash: ae436870814a1681
+    modified: false
+  - path: .bmad-2d-unity-game-dev/templates/level-design-doc-tmpl.yaml
+    hash: 3b22b791ac919d90
+    modified: false
+  - path: .bmad-2d-unity-game-dev/templates/game-story-tmpl.yaml
+    hash: b631880deda3f9dc
+    modified: false
+  - path: .bmad-2d-unity-game-dev/templates/game-design-doc-tmpl.yaml
+    hash: f8fb4c49ffc10055
+    modified: false
+  - path: .bmad-2d-unity-game-dev/templates/game-brief-tmpl.yaml
+    hash: 952f1d0242487955
+    modified: false
+  - path: .bmad-2d-unity-game-dev/templates/game-architecture-tmpl.yaml
+    hash: b6d9e043bae4748c
+    modified: false
+  - path: .bmad-2d-unity-game-dev/tasks/validate-game-story.md
+    hash: 63badce768a77cd0
+    modified: false
+  - path: .bmad-2d-unity-game-dev/tasks/game-design-brainstorming.md
+    hash: 84052668d82a4e6f
+    modified: false
+  - path: .bmad-2d-unity-game-dev/tasks/create-game-story.md
+    hash: 5719674ddca79de6
+    modified: false
+  - path: .bmad-2d-unity-game-dev/tasks/correct-course-game.md
+    hash: 53c1a5a610b4e9a2
+    modified: false
+  - path: .bmad-2d-unity-game-dev/tasks/advanced-elicitation.md
+    hash: 32afacc08c26d79b
+    modified: false
+  - path: .bmad-2d-unity-game-dev/checklists/game-story-dod-checklist.md
+    hash: 163b4279ae87927e
+    modified: false
+  - path: .bmad-2d-unity-game-dev/checklists/game-design-checklist.md
+    hash: ea36ab71fe5f4c8f
+    modified: false
+  - path: .bmad-2d-unity-game-dev/checklists/game-change-checklist.md
+    hash: 6858bd6b677c0ae2
+    modified: false
+  - path: .bmad-2d-unity-game-dev/checklists/game-architect-checklist.md
+    hash: 613e022cc5b7fac8
+    modified: false
+  - path: .bmad-2d-unity-game-dev/workflows/game-prototype.yaml
+    hash: 7a6e61a0ff9ed972
+    modified: false
+  - path: .bmad-2d-unity-game-dev/workflows/game-dev-greenfield.yaml
+    hash: 33ee82e595201448
+    modified: false
+  - path: .bmad-2d-unity-game-dev/data/development-guidelines.md
+    hash: 93b403a01b7a6159
+    modified: false
+  - path: .bmad-2d-unity-game-dev/data/bmad-kb.md
+    hash: ab4e45dffd3e1afd
+    modified: false
+  - path: .bmad-2d-unity-game-dev/config.yaml
+    hash: 6a9b485efccb5a21
+    modified: false
+  - path: .bmad-creative-writing/agents/world-builder.md
+    hash: fa0cdcf060b836ac
+    modified: false
+  - path: .bmad-creative-writing/agents/plot-architect.md
+    hash: 88f5c313abf557ab
+    modified: false
+  - path: .bmad-creative-writing/agents/narrative-designer.md
+    hash: 13d34e2832d2629a
+    modified: false
+  - path: .bmad-creative-writing/agents/genre-specialist.md
+    hash: 44a44ec96dac558e
+    modified: false
+  - path: .bmad-creative-writing/agents/editor.md
+    hash: 7dbb5a96025a6158
+    modified: false
+  - path: .bmad-creative-writing/agents/dialog-specialist.md
+    hash: 81752d5d231daff5
+    modified: false
+  - path: .bmad-creative-writing/agents/cover-designer.md
+    hash: 7861eb8031d90d87
+    modified: false
+  - path: .bmad-creative-writing/agents/character-psychologist.md
+    hash: c23b206d08079b35
+    modified: false
+  - path: .bmad-creative-writing/agents/book-critic.md
+    hash: fda2591a09e5927f
+    modified: false
+  - path: .bmad-creative-writing/agents/beta-reader.md
+    hash: 86920092ea245074
+    modified: false
+  - path: .bmad-creative-writing/agent-teams/agent-team.yaml
+    hash: 8a547a52e8971134
+    modified: false
+  - path: .bmad-creative-writing/templates/world-guide-tmpl.yaml
+    hash: 5c92dcabf01ca032
+    modified: false
+  - path: .bmad-creative-writing/templates/story-outline-tmpl.yaml
+    hash: aa6455d30532fe9f
+    modified: false
+  - path: .bmad-creative-writing/templates/scene-list-tmpl.yaml
+    hash: c005c04fbed3ead0
+    modified: false
+  - path: .bmad-creative-writing/templates/premise-brief-tmpl.yaml
+    hash: aef744fb03246e87
+    modified: false
+  - path: .bmad-creative-writing/templates/cover-design-brief-tmpl.yaml
+    hash: f98c1d7c9968c11b
+    modified: false
+  - path: .bmad-creative-writing/templates/character-profile-tmpl.yaml
+    hash: d726a3d2ab34516e
+    modified: false
+  - path: .bmad-creative-writing/templates/chapter-draft-tmpl.yaml
+    hash: 1ba7c85d26199082
+    modified: false
+  - path: .bmad-creative-writing/templates/beta-feedback-form.yaml
+    hash: 8897fbacc5fcc2c8
+    modified: false
+  - path: .bmad-creative-writing/tasks/workshop-dialog.md
+    hash: ddd1571fdfddc8b1
+    modified: false
+  - path: .bmad-creative-writing/tasks/select-next-arc.md
+    hash: ee8710d40fdf7aab
+    modified: false
+  - path: .bmad-creative-writing/tasks/quick-feedback.md
+    hash: e74747a85d072e5b
+    modified: false
+  - path: .bmad-creative-writing/tasks/publish-chapter.md
+    hash: 809d06114f181544
+    modified: false
+  - path: .bmad-creative-writing/tasks/provide-feedback.md
+    hash: 1ffbbaf24a9e5047
+    modified: false
+  - path: .bmad-creative-writing/tasks/outline-scenes.md
+    hash: f292f8b74b19f539
+    modified: false
+  - path: .bmad-creative-writing/tasks/incorporate-feedback.md
+    hash: f4104bd3fc893c74
+    modified: false
+  - path: .bmad-creative-writing/tasks/generate-scene-list.md
+    hash: 8a7e0c050db7bd8d
+    modified: false
+  - path: .bmad-creative-writing/tasks/generate-cover-prompts.md
+    hash: 6535f133f5b804c4
+    modified: false
+  - path: .bmad-creative-writing/tasks/generate-cover-brief.md
+    hash: 326453dee3afe974
+    modified: false
+  - path: .bmad-creative-writing/tasks/final-polish.md
+    hash: fe3f0b9996fbdc2a
+    modified: false
+  - path: .bmad-creative-writing/tasks/expand-synopsis.md
+    hash: 99817f883e208903
+    modified: false
+  - path: .bmad-creative-writing/tasks/expand-premise.md
+    hash: 119f0c14b9a222ca
+    modified: false
+  - path: .bmad-creative-writing/tasks/execute-checklist.md
+    hash: 08e493409c2e8e9b
+    modified: false
+  - path: .bmad-creative-writing/tasks/develop-character.md
+    hash: a360e6d0b28d5d69
+    modified: false
+  - path: .bmad-creative-writing/tasks/critical-review.md
+    hash: 06496dd17cbd7af5
+    modified: false
+  - path: .bmad-creative-writing/tasks/create-draft-section.md
+    hash: 6fb09ba605be5419
+    modified: false
+  - path: .bmad-creative-writing/tasks/create-doc.md
+    hash: 7222f15800b43f06
+    modified: false
+  - path: .bmad-creative-writing/tasks/character-depth-pass.md
+    hash: e7c1117a40d676e7
+    modified: false
+  - path: .bmad-creative-writing/tasks/build-world.md
+    hash: c799958444ebd07e
+    modified: false
+  - path: .bmad-creative-writing/tasks/brainstorm-premise.md
+    hash: a5f038b9666eb3c8
+    modified: false
+  - path: .bmad-creative-writing/tasks/assemble-kdp-package.md
+    hash: ac21387cb4150749
+    modified: false
+  - path: .bmad-creative-writing/tasks/analyze-story-structure.md
+    hash: 195c90c617fa85e9
+    modified: false
+  - path: .bmad-creative-writing/tasks/analyze-reader-feedback.md
+    hash: eafbae80a9616fa5
+    modified: false
+  - path: .bmad-creative-writing/tasks/advanced-elicitation.md
+    hash: add7c0dcc657fa4d
+    modified: false
+  - path: .bmad-creative-writing/checklists/ya-appropriateness-checklist.md
+    hash: 27bdf56b7c839b3d
+    modified: false
+  - path: .bmad-creative-writing/checklists/world-building-continuity-checklist.md
+    hash: dab0ba0f3ce1475f
+    modified: false
+  - path: .bmad-creative-writing/checklists/timeline-continuity-checklist.md
+    hash: d73b053bf8ecae94
+    modified: false
+  - path: .bmad-creative-writing/checklists/thriller-pacing-stakes-checklist.md
+    hash: 8fee04e77af3e38d
+    modified: false
+  - path: .bmad-creative-writing/checklists/steampunk-gadget-checklist.md
+    hash: 5ed1fd5f2640fb84
+    modified: false
+  - path: .bmad-creative-writing/checklists/sensitivity-representation-checklist.md
+    hash: bd4cf12e9038b3de
+    modified: false
+  - path: >-
+      .bmad-creative-writing/checklists/scifi-technology-plausibility-checklist.md
+    hash: d90197811c74ad6f
+    modified: false
+  - path: .bmad-creative-writing/checklists/scene-quality-checklist.md
+    hash: d95eaf646575f8df
+    modified: false
+  - path: .bmad-creative-writing/checklists/romance-emotional-beats-checklist.md
+    hash: 27c087b7372d402d
+    modified: false
+  - path: .bmad-creative-writing/checklists/publication-readiness-checklist.md
+    hash: db428d16661e0959
+    modified: false
+  - path: .bmad-creative-writing/checklists/plot-structure-checklist.md
+    hash: d0e1aa3ca8e6a798
+    modified: false
+  - path: .bmad-creative-writing/checklists/orbital-mechanics-checklist.md
+    hash: c8e5ce7cab4d6528
+    modified: false
+  - path: .bmad-creative-writing/checklists/mystery-clue-trail-checklist.md
+    hash: 5f289c0e48838685
+    modified: false
+  - path: .bmad-creative-writing/checklists/marketing-copy-checklist.md
+    hash: ce5bac4e55d8ee30
+    modified: false
+  - path: .bmad-creative-writing/checklists/line-edit-quality-checklist.md
+    hash: a73f114dd61577de
+    modified: false
+  - path: .bmad-creative-writing/checklists/kdp-cover-ready-checklist.md
+    hash: 204d9f95512b1ba6
+    modified: false
+  - path: .bmad-creative-writing/checklists/horror-suspense-checklist.md
+    hash: 67228cbd5278e670
+    modified: false
+  - path: .bmad-creative-writing/checklists/historical-accuracy-checklist.md
+    hash: 12f0f8b7c1f86bc0
+    modified: false
+  - path: .bmad-creative-writing/checklists/genre-tropes-checklist.md
+    hash: 2c9d4e28366a6481
+    modified: false
+  - path: .bmad-creative-writing/checklists/foreshadowing-payoff-checklist.md
+    hash: 330326f4367e1545
+    modified: false
+  - path: .bmad-creative-writing/checklists/fantasy-magic-system-checklist.md
+    hash: 0cda94a2061b3982
+    modified: false
+  - path: .bmad-creative-writing/checklists/epic-poetry-meter-checklist.md
+    hash: dc4fb318887115b2
+    modified: false
+  - path: .bmad-creative-writing/checklists/ebook-formatting-checklist.md
+    hash: 8bc3e4e6abf83170
+    modified: false
+  - path: .bmad-creative-writing/checklists/cyberpunk-aesthetic-checklist.md
+    hash: 853de3567ba910a6
+    modified: false
+  - path: .bmad-creative-writing/checklists/comedic-timing-checklist.md
+    hash: 84dcc06271f4eaac
+    modified: false
+  - path: .bmad-creative-writing/checklists/character-consistency-checklist.md
+    hash: 67f609157646e69f
+    modified: false
+  - path: .bmad-creative-writing/checklists/beta-feedback-closure-checklist.md
+    hash: 01fa302ceb2b4bf1
+    modified: false
+  - path: .bmad-creative-writing/workflows/short-story-creation.yaml
+    hash: 27f8073c4919f2f5
+    modified: false
+  - path: .bmad-creative-writing/workflows/series-planning.yaml
+    hash: 01cf9fc7ab33cd41
+    modified: false
+  - path: .bmad-creative-writing/workflows/screenplay-development.yaml
+    hash: 4d104b8daf21a26b
+    modified: false
+  - path: .bmad-creative-writing/workflows/novel-writing.yaml
+    hash: a51158ee2990c57f
+    modified: false
+  - path: .bmad-creative-writing/workflows/novel-snowflake-workflow.yaml
+    hash: 02e23df1d577e25b
+    modified: false
+  - path: .bmad-creative-writing/workflows/novel-serial-workflow.yaml
+    hash: d982903fff4efa7e
+    modified: false
+  - path: .bmad-creative-writing/workflows/novel-greenfield-workflow.yaml
+    hash: 66bc888bbd254f5f
+    modified: false
+  - path: .bmad-creative-writing/workflows/book-cover-design-workflow.md
+    hash: 3018effca443b510
+    modified: false
+  - path: .bmad-creative-writing/data/story-structures.md
+    hash: 4a06d4d66a037729
+    modified: false
+  - path: .bmad-creative-writing/data/bmad-kb.md
+    hash: 715d27430a649d88
+    modified: false
+  - path: .bmad-creative-writing/config.yaml
+    hash: 3e8443a5dc6a21ff
+    modified: false
+  - path: .bmad-creative-writing/README.md
+    hash: 8804e988c36809f3
+    modified: false
+  - path: .bmad-infrastructure-devops/agents/infra-devops-platform.md
+    hash: ce114159815a30a4
+    modified: false
+  - path: >-
+      .bmad-infrastructure-devops/templates/infrastructure-platform-from-arch-tmpl.yaml
+    hash: 9e8e6c893be95ed4
+    modified: false
+  - path: >-
+      .bmad-infrastructure-devops/templates/infrastructure-architecture-tmpl.yaml
+    hash: da37f2fe81b447b1
+    modified: false
+  - path: .bmad-infrastructure-devops/tasks/validate-infrastructure.md
+    hash: f524bb62bb31645c
+    modified: false
+  - path: .bmad-infrastructure-devops/tasks/review-infrastructure.md
+    hash: 5a2e646e516460dc
+    modified: false
+  - path: .bmad-infrastructure-devops/checklists/infrastructure-checklist.md
+    hash: 677d2cccc1142c5b
+    modified: false
+  - path: .bmad-infrastructure-devops/data/bmad-kb.md
+    hash: bb5d6ec4de073a01
+    modified: false
+  - path: .bmad-infrastructure-devops/config.yaml
+    hash: f5144fab4edf2da2
+    modified: false
+  - path: .bmad-infrastructure-devops/README.md
+    hash: 865555a511bc06f0
+    modified: false
