@@ -1,0 +1,35 @@
+{
+  "name": "wada-bmad",
+  "version": "0.0.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "nx build",
+    "test": "nx test",
+    "lint": "nx lint",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "nx": "21.4.1",
+    "@nx/react": "latest",
+    "@nx/js": "latest",
+    "@nx/jest": "latest",
+    "@nx/eslint": "latest",
+    "@nx/rollup": "latest",
+    "typescript": "latest",
+    "eslint": "latest",
+    "prettier": "latest",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "jest": "latest",
+    "ts-jest": "latest",
+    "@testing-library/react": "latest",
+    "@testing-library/jest-dom": "latest",
+    "jsdom": "latest",
+    "@types/jest": "latest"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "latest"
+  }
+}
