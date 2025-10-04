@@ -1,0 +1,38 @@
+# Development overrides for docker-compose
+# This file is automatically merged with coolify-deployment.yml in development
+
+version: '3.8'
+
+services:
+  # Development-specific overrides
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - '3000:3000'
+    command: npm start
+
+  # Enable Supabase Studio in development
+  studio:
+    profiles: ['development']
+    ports:
+      - '54325:3000'
+
+  # Development database with additional tools
+  db:
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=dev_password
+    volumes:
+      - ./supabase/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - postgres_data:/var/lib/postgresql/data

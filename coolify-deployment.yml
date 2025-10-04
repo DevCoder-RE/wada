@@ -1,0 +1,164 @@
+# Coolify Deployment Configuration for Apex Performance
+# Full self-hosted Supabase + Application stack
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15
+    container_name: apex-performance-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-apex_secure_password_2024}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./supabase/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Supabase REST API
+  rest:
+    image: supabase/postgrest:v12.0.2
+    container_name: apex-performance-rest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://postgres:${DB_PASSWORD:-apex_secure_password_2024}@db:5432/postgres
+      PGRST_DB_SCHEMA: public,graphql_public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-token-with-at-least-32-characters-long}
+      PGRST_JWT_DEFAULT_ROLE: authenticated
+    ports:
+      - '54321:3000'
+
+  # Supabase Auth
+  auth:
+    image: supabase/gotrue:v2.151.0
+    container_name: apex-performance-auth
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_EXTERNAL_URL: ${SUPABASE_URL:-http://localhost:54321}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${DB_PASSWORD:-apex_secure_password_2024}@db:5432/postgres
+      GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-token-with-at-least-32-characters-long}
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL:-false}
+      GOTRUE_SMTP_HOST: ${SMTP_HOST:-localhost}
+      GOTRUE_SMTP_PORT: ${SMTP_PORT:-587}
+      GOTRUE_SMTP_USER: ${SMTP_USER}
+      GOTRUE_SMTP_PASS: ${SMTP_PASS}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL}
+      GOTRUE_MAILER_SECURE_EMAIL_CHANGE_ENABLED: false
+      GOTRUE_EXTERNAL_PHONE_ENABLED: false
+    ports:
+      - '54322:9999'
+
+  # Supabase Storage
+  storage:
+    image: supabase/storage-api:v1.0.6
+    container_name: apex-performance-storage
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ANON_KEY: ${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0}
+      SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU}
+      POSTGREST_URL: http://rest:3000
+      DATABASE_URL: postgres://postgres:${DB_PASSWORD:-apex_secure_password_2024}@db:5432/postgres
+      PGOPTIONS: '-c search_path=storage,public'
+      FILE_SIZE_LIMIT: 52428800
+    volumes:
+      - storage_data:/var/lib/storage
+    ports:
+      - '54323:5000'
+
+  # Supabase Realtime
+  realtime:
+    image: supabase/realtime:v2.28.32
+    container_name: apex-performance-realtime
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: ${DB_PASSWORD:-apex_secure_password_2024}
+      DB_NAME: postgres
+      DB_AFTER_CONNECT_QUERY: 'SET search_path TO realtime'
+      API_JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-token-with-at-least-32-characters-long}
+      FLY_ALLOC_ID: fly123
+      FLY_APP_NAME: realtime
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-your-secret-key-base}
+      ERL_AFLAGS: -proto_dist inet_tcp
+      ENABLE_TAILSCALE: false
+      DNS_NODES: "''"
+      RLIMIT_NOFILE: '10000'
+    ports:
+      - '54324:4000'
+
+  # Supabase Studio (Development)
+  studio:
+    image: supabase/studio:latest
+    container_name: apex-performance-studio
+    restart: unless-stopped
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL:-http://localhost:54321}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU}
+      STUDIO_PG_META_URL: postgres://postgres:${DB_PASSWORD:-apex_secure_password_2024}@db:5432/postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-apex_secure_password_2024}
+    ports:
+      - '54325:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Apex Performance Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: apex-performance-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      SUPABASE_URL: ${SUPABASE_URL:-http://localhost:54321}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      SITE_URL: ${SITE_URL:-http://localhost:3000}
+    ports:
+      - '3000:80'
+    depends_on:
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_started
+      auth:
+        condition: service_started
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  storage_data:
