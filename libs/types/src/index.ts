@@ -1,6 +1,5 @@
 // Shared TypeScript type definitions for WADA BMAD project
 
-// User types
 export interface AthleteProfile {
   id: string;
   user_id: string;
@@ -31,7 +30,6 @@ export interface UserPreferences {
   updated_at: Date;
 }
 
-// Supplement types
 export interface Supplement {
   id: string;
   name: string;
@@ -63,7 +61,6 @@ export interface Certification {
   updated_at: Date;
 }
 
-// Logbook types
 export interface LogbookEntry {
   id: string;
   athlete_id: string;
@@ -94,7 +91,6 @@ export interface TrackingData {
   };
 }
 
-// API response types
 export interface ApiResponse<T> {
   data: T;
   error?: string;
@@ -120,21 +116,26 @@ export interface AuthResponse {
   };
 }
 
-// Educational content types
 export interface EducationalContent {
   id: string;
   title: string;
-  content: string;
-  type: 'article' | 'video' | 'infographic' | 'course' | 'webinar';
-  categoryId: string;
-  author: string;
-  summary?: string;
-  thumbnailUrl?: string;
-  videoUrl?: string;
-  duration?: number;
+  slug: string;
+  description?: string;
+  content_type: 'article' | 'video' | 'infographic' | 'course' | 'webinar';
+  content?: string;
+  media_url?: string;
+  thumbnail_url?: string;
+  author_id: string;
   status: 'draft' | 'review' | 'published' | 'archived';
-  publishedAt?: Date;
-  engagementMetrics: ContentEngagement;
+  published_at?: Date;
+  tags?: string[];
+  category: string;
+  reading_time_minutes?: number;
+  difficulty_level?: 'beginner' | 'intermediate' | 'advanced';
+  is_featured: boolean;
+  view_count: number;
+  like_count: number;
+  share_count: number;
   created_at: Date;
   updated_at: Date;
 }
@@ -143,87 +144,82 @@ export interface ContentCategory {
   id: string;
   name: string;
   description?: string;
-  parentId?: string;
-  sortOrder: number;
-  isActive: boolean;
+  parent_id?: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: Date;
+  updated_at?: Date;
+}
+
+export interface AffiliateLink {
+  id: string;
+  name: string;
+  url: string;
+  affiliate_code?: string;
+  commission_rate?: number;
+  status: 'active' | 'inactive' | 'pending' | 'suspended';
+  partner_name: string;
+  partner_website?: string;
+  disclosure_text?: string;
+  expires_at?: Date;
+  click_count: number;
+  conversion_count: number;
+  total_revenue: number;
+  created_by?: string;
   created_at: Date;
   updated_at: Date;
 }
 
 export interface ContentEngagement {
-  views: number;
-  likes: number;
-  bookmarks: number;
-  shares: number;
-  averageRating?: number;
-  totalRatings?: number;
-}
-
-export interface UserContentEngagement {
-  id: string;
-  userId: string;
-  contentId: string;
-  viewedAt?: Date;
-  likedAt?: Date;
-  bookmarkedAt?: Date;
-  sharedAt?: Date;
-  rating?: number;
-  created_at: Date;
-  updated_at: Date;
-}
-
-// Affiliate types
-export interface AffiliateLink {
-  id: string;
-  contentId?: string;
-  supplementId?: string;
-  retailerName: string;
-  productUrl: string;
-  commissionRate: number;
-  status: 'active' | 'inactive' | 'pending' | 'suspended';
-  affiliateCode?: string;
-  created_at: Date;
-  updated_at: Date;
-}
-
-export interface AffiliateClick {
-  id: string;
-  userId?: string;
-  affiliateLinkId: string;
-  clickTimestamp: Date;
-  source: string;
-  deviceType?: string;
-  country?: string;
-  created_at: Date;
-}
-
-export interface AffiliateConversion {
-  id: string;
-  userId: string;
-  affiliateLinkId: string;
-  orderValue: number;
-  commissionAmount: number;
-  status: 'pending' | 'approved' | 'rejected' | 'paid';
-  conversionTimestamp: Date;
-  created_at: Date;
-  updated_at: Date;
+  id?: string;
+  user_id: string;
+  content_id: string;
+  engagement_type: 'view' | 'like' | 'bookmark' | 'share' | 'complete';
+  progress_percentage?: number;
+  time_spent_seconds?: number;
+  completed_at?: Date;
+  created_at?: Date;
 }
 
 export interface ContentAnalytics {
   id: string;
-  contentId: string;
+  content_id: string;
   date: Date;
   views: number;
-  uniqueViews: number;
-  avgTimeSpent: number;
-  bounceRate: number;
-  conversionRate: number;
-  affiliateClicks: number;
-  affiliateConversions: number;
-  revenue: number;
+  unique_views: number;
+  avg_time_spent_seconds: number;
+  bounce_rate: number;
+  completion_rate: number;
+  created_at: Date;
 }
 
-// Scan history types
+export interface AffiliateClick {
+  id: string;
+  affiliate_link_id: string;
+  user_id?: string;
+  content_id?: string;
+  session_id?: string;
+  ip_address?: string;
+  user_agent?: string;
+  referrer_url?: string;
+  clicked_at: Date;
+  created_at?: Date;
+}
+
+export interface AffiliateConversion {
+  id: string;
+  affiliate_link_id: string;
+  click_id?: string;
+  user_id?: string;
+  order_id?: string;
+  commission_amount: number;
+  currency?: string;
+  status: 'pending' | 'approved' | 'rejected' | 'paid';
+  converted_at: Date;
+  paid_at?: Date;
+  created_at?: Date;
+}
+
 export interface ScanHistoryEntry {
   id: string;
   barcode: string;

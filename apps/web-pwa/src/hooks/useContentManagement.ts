@@ -1,5 +1,3 @@
-// React hook for content management functionality
-
 import { useState, useEffect, useCallback } from 'react';
 import {
   ContentManagementService,
@@ -10,7 +8,6 @@ import type {
   EducationalContent,
   ContentCategory,
   AffiliateLink,
-  ContentEngagement,
   ApiResponse,
 } from '@wada-bmad/types';
 
@@ -25,14 +22,11 @@ interface UseContentManagementOptions {
 }
 
 interface UseContentManagementReturn {
-  // Content data
   content: EducationalContent[];
   categories: ContentCategory[];
   affiliateLinks: AffiliateLink[];
   loading: boolean;
   error: string | null;
-
-  // Content operations
   loadContent: () => Promise<void>;
   loadCategories: () => Promise<void>;
   loadAffiliateLinks: () => Promise<void>;
@@ -54,23 +48,22 @@ interface UseContentManagementReturn {
   deleteContent: (id: string) => Promise<boolean>;
   searchContent: (
     query: string,
-    filters?: any
+    filters?: { category?: string; contentType?: string; limit?: number }
   ) => Promise<EducationalContent[]>;
   getRecommendedContent: (
     userId: string,
     limit?: number
   ) => Promise<EducationalContent[]>;
-
-  // Engagement tracking
   trackEngagement: (
-    engagement: Omit<ContentEngagement, 'id' | 'created_at'>
+    engagement: Omit<
+      import('@wada-bmad/types').ContentEngagement,
+      'id' | 'created_at'
+    >
   ) => Promise<void>;
   trackAffiliateClick: (
     affiliateLinkId: string,
     contentId?: string
   ) => Promise<void>;
-
-  // Utility functions
   refresh: () => Promise<void>;
   clearError: () => void;
 }
@@ -80,21 +73,22 @@ export const useContentManagement = (
 ): UseContentManagementReturn => {
   const { autoLoad = false, filters = {} } = options;
 
-  // State
   const [content, setContent] = useState<EducationalContent[]>([]);
   const [categories, setCategories] = useState<ContentCategory[]>([]);
   const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load content
   const loadContent = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
       const result: ApiResponse<EducationalContent[]> =
-        await ContentManagementService.getEducationalContent(filters);
+        await ContentManagementService.getEducationalContent({
+          ...filters,
+          status: filters.status || 'published',
+        });
 
       if (result.error) {
         setError(result.error);
@@ -106,9 +100,8 @@ export const useContentManagement = (
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [JSON.stringify(filters)]);
 
-  // Load categories
   const loadCategories = useCallback(async () => {
     try {
       const result: ApiResponse<ContentCategory[]> =
@@ -126,7 +119,6 @@ export const useContentManagement = (
     }
   }, []);
 
-  // Load affiliate links
   const loadAffiliateLinks = useCallback(async () => {
     try {
       const result: ApiResponse<AffiliateLink[]> =
@@ -144,7 +136,6 @@ export const useContentManagement = (
     }
   }, []);
 
-  // Create content
   const createContent = useCallback(
     async (
       contentData: Omit<
@@ -167,7 +158,6 @@ export const useContentManagement = (
           setError(result.error);
           return null;
         } else {
-          // Refresh content list
           await loadContent();
           return result.data;
         }
@@ -181,7 +171,6 @@ export const useContentManagement = (
     [loadContent]
   );
 
-  // Update content
   const updateContent = useCallback(
     async (
       id: string,
@@ -197,7 +186,6 @@ export const useContentManagement = (
           setError(result.error);
           return null;
         } else {
-          // Update local state
           setContent((prev) =>
             prev.map((item) => (item.id === id ? result.data : item))
           );
@@ -213,7 +201,6 @@ export const useContentManagement = (
     []
   );
 
-  // Delete content
   const deleteContent = useCallback(async (id: string): Promise<boolean> => {
     try {
       setError(null);
@@ -225,7 +212,6 @@ export const useContentManagement = (
         setError(result.error);
         return false;
       } else {
-        // Remove from local state
         setContent((prev) => prev.filter((item) => item.id !== id));
         return true;
       }
@@ -237,11 +223,14 @@ export const useContentManagement = (
     }
   }, []);
 
-  // Search content
   const searchContent = useCallback(
     async (
       query: string,
-      searchFilters?: any
+      searchFilters?: {
+        category?: string;
+        contentType?: string;
+        limit?: number;
+      }
     ): Promise<EducationalContent[]> => {
       try {
         setError(null);
@@ -268,7 +257,6 @@ export const useContentManagement = (
     []
   );
 
-  // Get recommended content
   const getRecommendedContent = useCallback(
     async (userId: string, limit = 10): Promise<EducationalContent[]> => {
       try {
@@ -295,22 +283,22 @@ export const useContentManagement = (
     []
   );
 
-  // Track engagement
   const trackEngagement = useCallback(
     async (
-      engagement: Omit<ContentEngagement, 'id' | 'created_at'>
+      engagement: Omit<
+        import('@wada-bmad/types').ContentEngagement,
+        'id' | 'created_at'
+      >
     ): Promise<void> => {
       try {
         await ContentManagementService.trackContentEngagement(engagement);
       } catch (err) {
-        // Don't set error for tracking failures to avoid disrupting UX
         console.warn('Failed to track engagement:', err);
       }
     },
     []
   );
 
-  // Track affiliate click
   const trackAffiliateClick = useCallback(
     async (affiliateLinkId: string, contentId?: string): Promise<void> => {
       try {
@@ -321,24 +309,20 @@ export const useContentManagement = (
           contentId
         );
       } catch (err) {
-        // Don't set error for tracking failures to avoid disrupting UX
         console.warn('Failed to track affiliate click:', err);
       }
     },
     []
   );
 
-  // Refresh all data
   const refresh = useCallback(async () => {
     await Promise.all([loadContent(), loadCategories(), loadAffiliateLinks()]);
   }, [loadContent, loadCategories, loadAffiliateLinks]);
 
-  // Clear error
   const clearError = useCallback(() => {
     setError(null);
   }, []);
 
-  // Auto-load data on mount
   useEffect(() => {
     if (autoLoad) {
       refresh();
@@ -346,14 +330,11 @@ export const useContentManagement = (
   }, [autoLoad, refresh]);
 
   return {
-    // Data
     content,
     categories,
     affiliateLinks,
     loading,
     error,
-
-    // Operations
     loadContent,
     loadCategories,
     loadAffiliateLinks,
@@ -362,12 +343,8 @@ export const useContentManagement = (
     deleteContent,
     searchContent,
     getRecommendedContent,
-
-    // Engagement tracking
     trackEngagement,
     trackAffiliateClick,
-
-    // Utilities
     refresh,
     clearError,
   };
