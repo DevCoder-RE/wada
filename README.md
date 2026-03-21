@@ -1,183 +1,153 @@
-# Supabase CLI
+# WADA BMAD - Athlete Supplement Safety Application
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
-](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+A dual-platform MVP application for athletes to ensure supplement and medication safety through barcode scanning, secure logging, and educational resources.
 
-[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
+## Features
 
-This repository contains all the functionality for Supabase CLI.
+- **Barcode Scanner**: Scan supplement barcodes for instant verification against certification databases
+- **Secure Logbook**: Track supplement and medication history with compliance monitoring
+- **Educational Content**: Access information about supplement safety and WADA compliance
+- **Offline Support**: Progressive Web App (PWA) with offline functionality
 
-- [x] Running Supabase locally
-- [x] Managing database migrations
-- [x] Creating and deploying Supabase Functions
-- [x] Generating types directly from your database schema
-- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
+## Tech Stack
 
-## Getting started
+| Category   | Technology                                   |
+| ---------- | -------------------------------------------- |
+| Frontend   | React 18, React Router 6, Vite, Tailwind CSS |
+| Backend    | Supabase (PostgreSQL 17, Auth, Realtime)     |
+| Mobile     | Flutter (planned)                            |
+| Monorepo   | Nx 21.4.1                                    |
+| Testing    | Jest, React Testing Library                  |
+| Deployment | Vercel, Docker, Coolify                      |
 
-### Install the CLI
+## Quick Start
 
-Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
+### Prerequisites
 
-```bash
-npm i supabase --save-dev
-```
+- Node.js 18+
+- npm 9+ or Yarn
+- Docker (for local Supabase)
+- Supabase CLI
 
-To install the beta release channel:
-
-```bash
-npm i supabase@beta --save-dev
-```
-
-When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
-
-```
-NODE_OPTIONS=--no-experimental-fetch yarn add supabase
-```
-
-> **Note**
-For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
-
-<details>
-  <summary><b>macOS</b></summary>
-
-  Available via [Homebrew](https://brew.sh). To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To install the beta release channel:
-  
-  ```sh
-  brew install supabase/tap/supabase-beta
-  brew link --overwrite supabase-beta
-  ```
-  
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Windows</b></summary>
-
-  Available via [Scoop](https://scoop.sh). To install:
-
-  ```powershell
-  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-  scoop install supabase
-  ```
-
-  To upgrade:
-
-  ```powershell
-  scoop update supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Linux</b></summary>
-
-  Available via [Homebrew](https://brew.sh) and Linux packages.
-
-  #### via Homebrew
-
-  To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-
-  #### via Linux packages
-
-  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
-
-  ```sh
-  sudo apk add --allow-untrusted <...>.apk
-  ```
-
-  ```sh
-  sudo dpkg -i <...>.deb
-  ```
-
-  ```sh
-  sudo rpm -i <...>.rpm
-  ```
-
-  ```sh
-  sudo pacman -U <...>.pkg.tar.zst
-  ```
-</details>
-
-<details>
-  <summary><b>Other Platforms</b></summary>
-
-  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
-
-  ```sh
-  go install github.com/supabase/cli@latest
-  ```
-
-  Add a symlink to the binary in `$PATH` for easier access:
-
-  ```sh
-  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
-  ```
-
-  This works on other non-standard Linux distros.
-</details>
-
-<details>
-  <summary><b>Community Maintained Packages</b></summary>
-
-  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
-  To install in your working directory:
-
-  ```bash
-  pkgx install supabase
-  ```
-
-  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
-</details>
-
-### Run the CLI
+### Installation
 
 ```bash
-supabase bootstrap
+# Clone the repository
+git clone <repository-url>
+cd wada-bmad
+
+# Install dependencies
+npm install
+
+# Start local Supabase
+cd supabase && supabase start && cd ..
+
+# Apply migrations
+cd supabase && supabase db push && cd ..
+
+# Start development server
+npm run dev
 ```
 
-Or using npx:
+Access the application at http://localhost:3000
+
+## Project Structure
+
+```
+wada-bmad/
+├── apps/
+│   └── web-pwa/              # React PWA application
+├── libs/
+│   ├── api-client/           # Supabase API client
+│   ├── types/                # TypeScript types
+│   ├── ui-components/       # Shared UI components
+│   └── utils/               # Utility functions
+├── supabase/
+│   ├── migrations/            # Database migrations
+│   └── config.toml           # Supabase configuration
+├── docs/
+│   ├── installation.md       # Installation guide
+│   ├── configuration.md      # Configuration guide
+│   ├── setup.md             # Setup procedures
+│   ├── usage.md             # Usage guide
+│   ├── uat-guide.md         # UAT procedures
+│   └── api/                 # API documentation
+└── flutter/                  # Flutter mobile app (planned)
+```
+
+## Documentation
+
+| Document                                                              | Description               |
+| --------------------------------------------------------------------- | ------------------------- |
+| [Installation Guide](docs/installation.md)                            | Prerequisites and setup   |
+| [Configuration Guide](docs/configuration.md)                          | Environment configuration |
+| [Setup Guide](docs/setup.md)                                          | Database and build setup  |
+| [Usage Guide](docs/usage.md)                                          | Application walkthrough   |
+| [UAT Guide](docs/uat-guide.md)                                        | Testing procedures        |
+| [Certification API Research](docs/api/certification-apis-research.md) | External API analysis     |
+
+## Available Scripts
 
 ```bash
-npx supabase bootstrap
+# Development
+npm run dev              # Start development server
+
+# Building
+npm run build            # Production build
+
+# Testing
+npm run test             # Run all tests
+npm run test:watch       # Watch mode
+npm run test:coverage    # Coverage report
+
+# Code Quality
+npm run lint             # ESLint
+npm run typecheck        # TypeScript check
+
+# Database (in supabase directory)
+supabase start           # Start local Supabase
+supabase db push         # Apply migrations
+supabase db reset        # Reset database with seed
 ```
 
-The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+## Test Barcodes
 
-## Docs
+For testing without physical products:
 
-Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+| Barcode        | Product              | Status      |
+| -------------- | -------------------- | ----------- |
+| `123456789012` | Whey Protein Isolate | ✅ Verified |
+| `123456789013` | Creatine Monohydrate | ✅ Verified |
+| `123456789014` | BCAA Complex         | ✅ Verified |
+| `123456789015` | Multivitamin         | ✅ Verified |
+| `123456789016` | Fish Oil             | ✅ Verified |
 
-## Breaking changes
+## Test Accounts
 
-We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
+| Email            | Password | Role    |
+| ---------------- | -------- | ------- |
+| test@athlete.com | Test123! | Athlete |
+| coach@test.com   | Test123! | Coach   |
 
-However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
+## Contributing
 
-## Developing
+1. Create a feature branch: `git checkout -b feature/your-feature`
+2. Commit changes: `git commit -m "feat: add new feature"`
+3. Push to branch: `git push origin feature/your-feature`
+4. Open a Pull Request
 
-To run from source:
+## Version
 
-```sh
-# Go >= 1.22
-go run . help
-```
+Current version: **v0.5.0-beta**
+
+See [CHANGELOG](docs/changelog.md) for version history.
+
+## License
+
+Proprietary - All rights reserved
+
+## Support
+
+- Documentation: See `/docs` directory
+- Issues: GitHub Issues
+- Email: [support@example.com]
