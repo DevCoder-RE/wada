@@ -27,7 +27,9 @@ const Profile: React.FC = () => {
               email: result.data.email || '',
               sport: result.data.sport || '',
               team: result.data.team || '',
-              dateOfBirth: result.data.dateOfBirth ? result.data.dateOfBirth.toISOString().split('T')[0] : '',
+              dateOfBirth: result.data.dateOfBirth
+                ? result.data.dateOfBirth.toISOString().split('T')[0]
+                : '',
             });
           }
         }
@@ -42,20 +44,43 @@ const Profile: React.FC = () => {
   }, []);
 
   const handleSave = async () => {
-    // In a real implementation, you would call an API to update the profile
-    // For now, we'll just update the local state
     if (profile) {
-      const updatedProfile = {
-        ...profile,
-        name: formData.name,
-        email: formData.email,
-        sport: formData.sport,
-        team: formData.team,
-        dateOfBirth: formData.dateOfBirth ? new Date(formData.dateOfBirth) : undefined,
-      };
-      setProfile(updatedProfile);
+      try {
+        const user = await AuthService.getCurrentUser();
+        if (!user) {
+          alert('You must be logged in to update your profile');
+          return;
+        }
+
+        const updates = {
+          name: formData.name,
+          email: formData.email,
+          sport: formData.sport,
+          team: formData.team,
+          dateOfBirth: formData.dateOfBirth
+            ? new Date(formData.dateOfBirth)
+            : undefined,
+        };
+
+        const result = await DatabaseService.updateAthleteProfile(
+          user.id,
+          updates
+        );
+
+        if (result.error) {
+          alert(`Failed to save profile: ${result.error}`);
+          return;
+        }
+
+        if (result.data) {
+          setProfile(result.data);
+        }
+        setEditing(false);
+      } catch (error) {
+        console.error('Failed to save profile:', error);
+        alert('Failed to save profile. Please try again.');
+      }
     }
-    setEditing(false);
   };
 
   const handleSignOut = async () => {
@@ -117,7 +142,10 @@ const Profile: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Full Name
               </label>
               {editing ? (
@@ -125,16 +153,23 @@ const Profile: React.FC = () => {
                   type="text"
                   id="name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               ) : (
-                <p className="mt-1 text-sm text-gray-900">{profile?.name || 'Not set'}</p>
+                <p className="mt-1 text-sm text-gray-900">
+                  {profile?.name || 'Not set'}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email
               </label>
               {editing ? (
@@ -142,16 +177,23 @@ const Profile: React.FC = () => {
                   type="email"
                   id="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               ) : (
-                <p className="mt-1 text-sm text-gray-900">{profile?.email || 'Not set'}</p>
+                <p className="mt-1 text-sm text-gray-900">
+                  {profile?.email || 'Not set'}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="sport" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="sport"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Sport
               </label>
               {editing ? (
@@ -159,16 +201,23 @@ const Profile: React.FC = () => {
                   type="text"
                   id="sport"
                   value={formData.sport}
-                  onChange={(e) => setFormData({ ...formData, sport: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, sport: e.target.value })
+                  }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               ) : (
-                <p className="mt-1 text-sm text-gray-900">{profile?.sport || 'Not set'}</p>
+                <p className="mt-1 text-sm text-gray-900">
+                  {profile?.sport || 'Not set'}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="team" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="team"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Team
               </label>
               {editing ? (
@@ -176,16 +225,23 @@ const Profile: React.FC = () => {
                   type="text"
                   id="team"
                   value={formData.team}
-                  onChange={(e) => setFormData({ ...formData, team: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, team: e.target.value })
+                  }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               ) : (
-                <p className="mt-1 text-sm text-gray-900">{profile?.team || 'Not set'}</p>
+                <p className="mt-1 text-sm text-gray-900">
+                  {profile?.team || 'Not set'}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="dateOfBirth"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Date of Birth
               </label>
               {editing ? (
@@ -193,12 +249,16 @@ const Profile: React.FC = () => {
                   type="date"
                   id="dateOfBirth"
                   value={formData.dateOfBirth}
-                  onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, dateOfBirth: e.target.value })
+                  }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               ) : (
                 <p className="mt-1 text-sm text-gray-900">
-                  {profile?.dateOfBirth ? new Date(profile.dateOfBirth).toLocaleDateString() : 'Not set'}
+                  {profile?.dateOfBirth
+                    ? new Date(profile.dateOfBirth).toLocaleDateString()
+                    : 'Not set'}
                 </p>
               )}
             </div>

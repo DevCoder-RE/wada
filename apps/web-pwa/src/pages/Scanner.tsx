@@ -16,6 +16,7 @@ const Scanner: React.FC = () => {
     isScanning,
     setIsScanning,
     lastScanned,
+    scanHistory,
     matchedSupplement,
     showAddForm,
     setShowAddForm,
@@ -150,7 +151,7 @@ const Scanner: React.FC = () => {
         </div>
       )}
 
-      <RecentScans lastScanned={lastScanned} />
+      <RecentScans scanHistory={scanHistory} />
     </div>
   );
 };

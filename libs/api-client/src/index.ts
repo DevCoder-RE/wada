@@ -9,9 +9,12 @@ import type {
   ApiResponse,
   AuthUser,
   UserPreferences,
-  Certification
+  Certification,
 } from '@wada-bmad/types';
 import { supabaseConfig, realtimeConfig, apiConfig } from './config';
+
+// Export CertificationService
+export { CertificationService } from './certification-service';
 
 // Create Supabase client with configuration
 export const supabase: SupabaseClient = createClient(
@@ -34,7 +37,10 @@ export const supabase: SupabaseClient = createClient(
 
 // Authentication methods
 export class AuthService {
-  static async signUp(email: string, password: string): Promise<ApiResponse<AuthUser>> {
+  static async signUp(
+    email: string,
+    password: string
+  ): Promise<ApiResponse<AuthUser>> {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -58,7 +64,10 @@ export class AuthService {
     }
   }
 
-  static async signIn(email: string, password: string): Promise<ApiResponse<AuthUser>> {
+  static async signIn(
+    email: string,
+    password: string
+  ): Promise<ApiResponse<AuthUser>> {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -97,14 +106,18 @@ export class AuthService {
   }
 
   static async getCurrentUser(): Promise<User | null> {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     return user;
   }
 }
 
 // Database query functions
 export class DatabaseService {
-  static async getAthleteProfile(userId: string): Promise<ApiResponse<AthleteProfile>> {
+  static async getAthleteProfile(
+    userId: string
+  ): Promise<ApiResponse<AthleteProfile>> {
     try {
       const { data, error } = await supabase
         .from('athlete_profiles')
@@ -118,12 +131,16 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: {} as AthleteProfile,
-        error: error instanceof Error ? error.message : 'Failed to fetch profile',
+        error:
+          error instanceof Error ? error.message : 'Failed to fetch profile',
       };
     }
   }
 
-  static async updateAthleteProfile(userId: string, updates: Partial<AthleteProfile>): Promise<ApiResponse<AthleteProfile>> {
+  static async updateAthleteProfile(
+    userId: string,
+    updates: Partial<AthleteProfile>
+  ): Promise<ApiResponse<AthleteProfile>> {
     try {
       const { data, error } = await supabase
         .from('athlete_profiles')
@@ -138,16 +155,15 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: {} as AthleteProfile,
-        error: error instanceof Error ? error.message : 'Failed to update profile',
+        error:
+          error instanceof Error ? error.message : 'Failed to update profile',
       };
     }
   }
 
   static async getSupplements(): Promise<ApiResponse<Supplement[]>> {
     try {
-      const { data, error } = await supabase
-        .from('supplements')
-        .select(`
+      const { data, error } = await supabase.from('supplements').select(`
           *,
           ingredients (*),
           supplement_certifications (
@@ -158,24 +174,35 @@ export class DatabaseService {
       if (error) throw error;
 
       // Transform the data to match our types
-      const transformedData = data?.map(supplement => ({
-        ...supplement,
-        certifications: supplement.supplement_certifications?.map((sc: any) => sc.certifications) || []
-      })) || [];
+      const transformedData =
+        data?.map((supplement) => ({
+          ...supplement,
+          certifications:
+            supplement.supplement_certifications?.map(
+              (sc: any) => sc.certifications
+            ) || [],
+        })) || [];
 
       return { data: transformedData };
     } catch (error) {
       return {
         data: [],
-        error: error instanceof Error ? error.message : 'Failed to fetch supplements',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to fetch supplements',
       };
     }
   }
 
-  static async verifySupplementByBarcode(barcode: string): Promise<ApiResponse<any>> {
+  static async verifySupplementByBarcode(
+    barcode: string
+  ): Promise<ApiResponse<any>> {
     try {
-      const { data, error } = await supabase
-        .rpc('verify_supplement_by_barcode', { barcode_input: barcode });
+      const { data, error } = await supabase.rpc(
+        'verify_supplement_by_barcode',
+        { barcode_input: barcode }
+      );
 
       if (error) throw error;
 
@@ -183,23 +210,31 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: null,
-        error: error instanceof Error ? error.message : 'Failed to verify supplement',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to verify supplement',
       };
     }
   }
 
-  static async getLogbookEntries(athleteId: string, limit = 50): Promise<ApiResponse<LogbookEntry[]>> {
+  static async getLogbookEntries(
+    athleteId: string,
+    limit = 50
+  ): Promise<ApiResponse<LogbookEntry[]>> {
     try {
       const { data, error } = await supabase
         .from('logbook_entries')
-        .select(`
+        .select(
+          `
           *,
           supplements (
             id,
             name,
             brand
           )
-        `)
+        `
+        )
         .eq('athlete_id', athleteId)
         .order('timestamp', { ascending: false })
         .limit(limit);
@@ -210,12 +245,17 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: [],
-        error: error instanceof Error ? error.message : 'Failed to fetch logbook entries',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to fetch logbook entries',
       };
     }
   }
 
-  static async createLogbookEntry(entry: Omit<LogbookEntry, 'id' | 'timestamp' | 'created_at' | 'updated_at'>): Promise<ApiResponse<LogbookEntry>> {
+  static async createLogbookEntry(
+    entry: Omit<LogbookEntry, 'id' | 'timestamp' | 'created_at' | 'updated_at'>
+  ): Promise<ApiResponse<LogbookEntry>> {
     try {
       const { data, error } = await supabase
         .from('logbook_entries')
@@ -232,12 +272,18 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: {} as LogbookEntry,
-        error: error instanceof Error ? error.message : 'Failed to create logbook entry',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to create logbook entry',
       };
     }
   }
 
-  static async updateLogbookEntry(id: string, updates: Partial<LogbookEntry>): Promise<ApiResponse<LogbookEntry>> {
+  static async updateLogbookEntry(
+    id: string,
+    updates: Partial<LogbookEntry>
+  ): Promise<ApiResponse<LogbookEntry>> {
     try {
       const { data, error } = await supabase
         .from('logbook_entries')
@@ -252,7 +298,10 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: {} as LogbookEntry,
-        error: error instanceof Error ? error.message : 'Failed to update logbook entry',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to update logbook entry',
       };
     }
   }
@@ -263,12 +312,14 @@ export class DatabaseService {
     endDate?: Date
   ): Promise<ApiResponse<any>> {
     try {
-      const { data, error } = await supabase
-        .rpc('get_athlete_compliance_summary', {
+      const { data, error } = await supabase.rpc(
+        'get_athlete_compliance_summary',
+        {
           athlete_uuid: athleteId,
           start_date: startDate?.toISOString().split('T')[0],
-          end_date: endDate?.toISOString().split('T')[0]
-        });
+          end_date: endDate?.toISOString().split('T')[0],
+        }
+      );
 
       if (error) throw error;
 
@@ -276,7 +327,10 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: null,
-        error: error instanceof Error ? error.message : 'Failed to fetch compliance summary',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to fetch compliance summary',
       };
     }
   }
@@ -294,12 +348,17 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: [],
-        error: error instanceof Error ? error.message : 'Failed to fetch certifications',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to fetch certifications',
       };
     }
   }
 
-  static async getUserPreferences(userId: string): Promise<ApiResponse<UserPreferences>> {
+  static async getUserPreferences(
+    userId: string
+  ): Promise<ApiResponse<UserPreferences>> {
     try {
       const { data, error } = await supabase
         .from('user_preferences')
@@ -313,12 +372,18 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: {} as UserPreferences,
-        error: error instanceof Error ? error.message : 'Failed to fetch user preferences',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to fetch user preferences',
       };
     }
   }
 
-  static async updateUserPreferences(userId: string, updates: Partial<UserPreferences>): Promise<ApiResponse<UserPreferences>> {
+  static async updateUserPreferences(
+    userId: string,
+    updates: Partial<UserPreferences>
+  ): Promise<ApiResponse<UserPreferences>> {
     try {
       const { data, error } = await supabase
         .from('user_preferences')
@@ -333,7 +398,10 @@ export class DatabaseService {
     } catch (error) {
       return {
         data: {} as UserPreferences,
-        error: error instanceof Error ? error.message : 'Failed to update user preferences',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to update user preferences',
       };
     }
   }
