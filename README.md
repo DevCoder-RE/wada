@@ -138,9 +138,21 @@ For testing without physical products:
 
 ## Version
 
-Current version: **v0.5.0-beta**
+Current version: **v0.5.0-uat** (UAT Release)
 
-See [CHANGELOG](docs/changelog.md) for version history.
+### Version History
+
+| Version     | Date     | Notes                                   |
+| ----------- | -------- | --------------------------------------- |
+| v0.5.0-uat  | Mar 2026 | UAT Release - Bug fixes, tests, docs    |
+| v0.5.0-beta | Feb 2026 | Beta Release - Initial feature complete |
+| v0.1.0      | Jan 2026 | MVP Launch                              |
+
+### Known Issues (UAT)
+
+- Test coverage verification pending (npm install timeout in CI)
+- Certification APIs use mock implementation (real APIs require partnerships)
+- Flutter mobile app deferred to post-UAT
 
 ## License
 
