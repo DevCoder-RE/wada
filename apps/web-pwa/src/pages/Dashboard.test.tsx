@@ -73,7 +73,11 @@ describe('Dashboard', () => {
 
     renderDashboard();
 
-    expect(screen.getByRole('generic')).toHaveClass('animate-spin');
+    expect(
+      screen.getAllByRole('generic').some((el) =>
+        el.className.includes('animate-spin')
+      )
+    ).toBe(true);
   });
 
   it('displays welcome message with user name', async () => {
@@ -130,7 +134,9 @@ describe('Dashboard', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Total Entries')).toBeInTheDocument();
-      expect(screen.getByText('2')).toBeInTheDocument();
+      expect(
+        screen.getByText('Total Entries').closest('div')
+      ).toHaveTextContent('2');
     });
   });
 
@@ -168,8 +174,11 @@ describe('Dashboard', () => {
     renderDashboard();
 
     await waitFor(() => {
-      expect(screen.getByText('Verified')).toBeInTheDocument();
-      expect(screen.getByText('1')).toBeInTheDocument();
+      const verifiedLabel = screen.getByText('Verified', {
+        selector: 'dt',
+      });
+      expect(verifiedLabel).toBeInTheDocument();
+      expect(verifiedLabel.closest('div')).toHaveTextContent('1');
     });
   });
 
@@ -328,7 +337,7 @@ describe('Dashboard', () => {
     renderDashboard();
 
     await waitFor(() => {
-      expect(screen.getByText('Supplement logged')).toBeInTheDocument();
+      expect(screen.getAllByText('Supplement logged')).toHaveLength(2);
     });
   });
 

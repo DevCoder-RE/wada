@@ -72,6 +72,7 @@ export const useContentManagement = (
   options: UseContentManagementOptions = {}
 ): UseContentManagementReturn => {
   const { autoLoad = false, filters = {} } = options;
+  const { category, status, authorId, limit } = filters;
 
   const [content, setContent] = useState<EducationalContent[]>([]);
   const [categories, setCategories] = useState<ContentCategory[]>([]);
@@ -86,8 +87,10 @@ export const useContentManagement = (
 
       const result: ApiResponse<EducationalContent[]> =
         await ContentManagementService.getEducationalContent({
-          ...filters,
-          status: filters.status || 'published',
+          category,
+          status: status || 'published',
+          authorId,
+          limit,
         });
 
       if (result.error) {
@@ -100,7 +103,7 @@ export const useContentManagement = (
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(filters)]);
+  }, [category, status, authorId, limit]);
 
   const loadCategories = useCallback(async () => {
     try {

@@ -35,13 +35,15 @@ describe('VerificationResults', () => {
       loading: true,
     };
 
-    render(<VerificationResults verificationResult={verificationResult} />);
+    const { container } = render(
+      <VerificationResults verificationResult={verificationResult} />
+    );
 
     expect(screen.getByText('Verification Results')).toBeInTheDocument();
     expect(
       screen.getByText('Verifying with certification databases...')
     ).toBeInTheDocument();
-    expect(screen.getByRole('generic', { hidden: true })).toHaveClass(
+    expect(container.querySelector('.animate-spin')).toHaveClass(
       'animate-spin'
     );
   });
@@ -120,8 +122,12 @@ describe('VerificationResults', () => {
 
     render(<VerificationResults verificationResult={verificationResult} />);
 
-    expect(screen.getByText('Valid until 12/31/2025')).toBeInTheDocument();
-    expect(screen.getByText('Valid until 6/15/2024')).toBeInTheDocument();
+    expect(
+      screen.getByText(`Valid until ${new Date('2025-12-31').toLocaleDateString()}`)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`Valid until ${new Date('2024-06-15').toLocaleDateString()}`)
+    ).toBeInTheDocument();
   });
 
   it('shows error message when verification fails', () => {

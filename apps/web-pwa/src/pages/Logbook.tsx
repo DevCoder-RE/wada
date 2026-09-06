@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import {
-  DatabaseService,
   AuthService,
   RealtimeService,
 } from '@wada-bmad/api-client';
-import { LogEntry } from '@wada-bmad/ui-components';
 import {
   SecureLogbookEntryComponent,
   ComplianceAlertComponent,
@@ -59,7 +57,11 @@ const Logbook: React.FC = () => {
       }
     };
 
-    const unsubscribe = loadData();
+    let unsubscribe: (() => void) | undefined;
+
+    loadData().then((sub) => {
+      unsubscribe = sub;
+    });
 
     return () => {
       if (unsubscribe) unsubscribe();

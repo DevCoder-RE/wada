@@ -78,6 +78,10 @@ describe('useScanner', () => {
 
     const { result } = renderHook(() => useScanner());
 
+    await waitFor(() => {
+      expect(result.current.supplements).toHaveLength(1);
+    });
+
     act(() => {
       result.current.handleBarcodeDetected('1234567890123');
     });

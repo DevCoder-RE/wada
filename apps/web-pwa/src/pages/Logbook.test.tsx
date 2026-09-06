@@ -81,9 +81,9 @@ describe('Logbook', () => {
       loading: true,
     });
 
-    render(<Logbook />);
+    const { container } = render(<Logbook />);
 
-    expect(screen.getByRole('generic')).toHaveClass('animate-spin');
+    expect(container.querySelector('.animate-spin')).not.toBeNull();
   });
 
   it('displays page title', async () => {
@@ -107,7 +107,7 @@ describe('Logbook', () => {
 
     render(<Logbook />);
 
-    await waitFor () => {
+    await waitFor(() => {
       expect(screen.getByText('Add Entry')).toBeInTheDocument();
     });
   });
@@ -192,7 +192,7 @@ describe('Logbook', () => {
 
     render(<Logbook />);
 
-    await waitFor () => {
+    await waitFor(() => {
       expect(screen.getByLabelText('Filter by Date')).toBeInTheDocument();
     });
   });
@@ -234,12 +234,13 @@ describe('Logbook', () => {
     mockUseSecureLogbook.mockReturnValue({
       ...defaultMockReturn,
       entries: mockEntries,
+      supplements: mockSupplements,
     });
 
     render(<Logbook />);
 
     await waitFor(() => {
-      expect(screen.getByText('Supplement logged')).toBeInTheDocument();
+      expect(screen.getByText('Whey Protein')).toBeInTheDocument();
     });
 
     const searchInput = screen.getByPlaceholderText('Search supplements or notes...');
@@ -324,7 +325,7 @@ describe('Logbook', () => {
       expect(screen.getByText('Add New Entry')).toBeInTheDocument();
     });
 
-    const select = screen.getByRole('combobox');
+    const select = screen.getByLabelText('Supplement *');
     fireEvent.change(select, { target: { value: 'supp-1' } });
 
     const amountInput = screen.getByLabelText('Amount *');
@@ -332,12 +333,14 @@ describe('Logbook', () => {
 
     fireEvent.click(screen.getAllByText('Add Entry')[1]);
 
-    expect(createEntry).toHaveBeenCalledWith(
-      expect.objectContaining({
-        supplementId: 'supp-1',
-        amount: 30,
-      })
-    );
+    await waitFor(() => {
+      expect(createEntry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          supplementId: 'supp-1',
+          amount: 30,
+        })
+      );
+    });
   });
 
   it('validates required fields in add form', async () => {
@@ -421,7 +424,7 @@ describe('Logbook', () => {
     render(<Logbook />);
 
     await waitFor(() => {
-      const alertMessages = screen.getAllByText(/Alert/);
+      const alertMessages = screen.getAllByText(/Alert \d/);
       expect(alertMessages.length).toBe(3);
     });
   });
@@ -454,7 +457,7 @@ describe('Logbook', () => {
     const { unmount } = render(<Logbook />);
 
     await waitFor(() => {
-      expect(screen.getByText('Supplement Logbook')).toBeInTheDocument();
+      expect(mockRealtimeService.subscribeToLogbookUpdates).toHaveBeenCalled();
     });
 
     unmount();

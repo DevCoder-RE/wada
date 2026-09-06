@@ -15,10 +15,15 @@ export const useScanHistory = () => {
         if (stored) {
           const parsed = JSON.parse(stored);
           setScanHistory(
-            parsed.map((item: any) => ({
-              ...item,
-              scannedAt: new Date(item.scannedAt),
-            }))
+            parsed
+              .map((item: any) => ({
+                ...item,
+                scannedAt: new Date(item.scannedAt),
+              }))
+              .sort(
+                (a: ScanHistoryEntry, b: ScanHistoryEntry) =>
+                  b.scannedAt.getTime() - a.scannedAt.getTime()
+              )
           );
         }
       } catch (error) {

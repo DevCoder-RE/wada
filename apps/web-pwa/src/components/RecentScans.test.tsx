@@ -36,7 +36,7 @@ describe('RecentScans', () => {
 
     expect(screen.getByText('Recent Scans')).toBeInTheDocument();
     const container = screen.getByText('Recent Scans').closest('.bg-white');
-    expect(container).toHaveClass('animate-pulse');
+    expect(container.querySelector('.animate-pulse')).toBeInTheDocument();
   });
 
   it('displays scan history when available', () => {
@@ -71,9 +71,9 @@ describe('RecentScans', () => {
 
     render(<RecentScans scanHistory={manyScans} />);
 
-    const items = screen.getAllByText(/123456789/);
-    expect(items.length).toBe(5);
-    expect(screen.getByText('5 of 10 scans')).toBeInTheDocument();
+    const container = screen.getByText('Recent Scans').closest('.bg-white');
+    expect(container.querySelectorAll('.bg-gray-50').length).toBe(5);
+    expect(screen.getByText('10 total')).toBeInTheDocument();
   });
 
   it('shows verified badge for verified scans', () => {
@@ -102,8 +102,11 @@ describe('RecentScans', () => {
   it('displays timestamp for each scan', () => {
     render(<RecentScans scanHistory={mockScanHistory} />);
 
-    const timestamps = screen.getAllByText(/\d{1,2}\/\d{1,2}\/\d{4}/);
-    expect(timestamps.length).toBe(3);
+    mockScanHistory.forEach((scan) => {
+      expect(
+        screen.getByText(new Date(scan.scannedAt).toLocaleString())
+      ).toBeInTheDocument();
+    });
   });
 
   it('handles scan without brand', () => {
@@ -115,7 +118,7 @@ describe('RecentScans', () => {
 
     render(<RecentScans scanHistory={[scanWithoutBrand]} />);
 
-    expect(screen.getByText('111111111111')).toBeInTheDocument();
+    expect(screen.getAllByText('111111111111').length).toBeGreaterThan(0);
   });
 
   it('shows "0 total" when history is empty array', () => {

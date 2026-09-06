@@ -1,14 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@wada-bmad/ui-components';
 import { useContentManagement } from '../hooks/useContentManagement';
 
 const Education: React.FC = () => {
-  const { content, loading, error, loadContent, trackAffiliateClick } =
+  const { content, loading, error, loadContent } =
     useContentManagement({ autoLoad: true });
 
   useEffect(() => {
@@ -45,10 +39,6 @@ const Education: React.FC = () => {
     ],
     []
   );
-
-  const handleAffiliateClick = async (linkId: string, contentId?: string) => {
-    await trackAffiliateClick(linkId, contentId);
-  };
 
   if (loading) {
     return (
@@ -101,11 +91,13 @@ const Education: React.FC = () => {
         </div>
         <div className="grid gap-6 md:grid-cols-2">
           {staticTopics.map((topic, index) => (
-            <Card key={`static-${index}`}>
-              <CardHeader>
-                <CardTitle>{topic.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div key={`static-${index}`} className="bg-white shadow rounded-lg overflow-hidden">
+              <div className="px-4 py-5 sm:p-6 border-b border-gray-200">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  {topic.title}
+                </h3>
+              </div>
+              <div className="px-4 py-5 sm:p-6">
                 <p className="text-gray-700 mb-4">{topic.content}</p>
                 {topic.details && (
                   <p className="text-sm text-gray-600 mb-4">{topic.details}</p>
@@ -117,8 +109,8 @@ const Education: React.FC = () => {
                     ))}
                   </ul>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -158,7 +150,10 @@ const Education: React.FC = () => {
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {content.slice(0, 6).map((item) => (
-              <Card key={item.id} className="hover:shadow-lg transition-shadow">
+              <div
+                key={item.id}
+                className="bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+              >
                 {item.thumbnail_url && (
                   <div className="aspect-video bg-gray-100 rounded-t-lg overflow-hidden">
                     <img
@@ -168,15 +163,17 @@ const Education: React.FC = () => {
                     />
                   </div>
                 )}
-                <CardHeader>
+                <div className="px-4 py-5 sm:p-6 border-b border-gray-200">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">
                       {getContentTypeIcon(item.content_type)}
                     </span>
-                    <CardTitle className="text-lg">{item.title}</CardTitle>
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      {item.title}
+                    </h3>
                   </div>
-                </CardHeader>
-                <CardContent>
+                </div>
+                <div className="px-4 py-5 sm:p-6">
                   {item.description && (
                     <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                       {item.description}
@@ -190,8 +187,8 @@ const Education: React.FC = () => {
                       <span>{item.reading_time_minutes} min read</span>
                     )}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -199,11 +196,13 @@ const Education: React.FC = () => {
 
       <div className="grid gap-6 md:grid-cols-2">
         {staticTopics.map((topic, index) => (
-          <Card key={`static-${index}`}>
-            <CardHeader>
-              <CardTitle>{topic.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div key={`static-${index}`} className="bg-white shadow rounded-lg overflow-hidden">
+            <div className="px-4 py-5 sm:p-6 border-b border-gray-200">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                {topic.title}
+              </h3>
+            </div>
+            <div className="px-4 py-5 sm:p-6">
               <p className="text-gray-700 mb-4">{topic.content}</p>
               {topic.details && (
                 <p className="text-sm text-gray-600 mb-4">{topic.details}</p>
@@ -226,15 +225,17 @@ const Education: React.FC = () => {
                   <span aria-hidden="true">→</span>
                 </a>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Certification Guide</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="bg-white shadow rounded-lg overflow-hidden">
+          <div className="px-4 py-5 sm:p-6 border-b border-gray-200">
+            <h3 className="text-lg leading-6 font-medium text-gray-900">
+              Certification Guide
+            </h3>
+          </div>
+          <div className="px-4 py-5 sm:p-6">
             <p className="text-gray-700 mb-4">
               Understand NSF, Informed Sport, and other certifications that
               ensure supplement safety and purity.
@@ -278,15 +279,17 @@ const Education: React.FC = () => {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Safety Checklist</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="bg-white shadow rounded-lg overflow-hidden">
+        <div className="px-4 py-5 sm:p-6 border-b border-gray-200">
+          <h3 className="text-lg leading-6 font-medium text-gray-900">
+            Quick Safety Checklist
+          </h3>
+        </div>
+        <div className="px-4 py-5 sm:p-6">
           <div className="space-y-4">
             <p className="text-gray-700">Before using any supplement:</p>
             <div className="grid gap-3 md:grid-cols-2">
@@ -308,8 +311,8 @@ const Education: React.FC = () => {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

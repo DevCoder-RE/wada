@@ -27,8 +27,10 @@ const Profile: React.FC = () => {
               email: result.data.email || '',
               sport: result.data.sport || '',
               team: result.data.team || '',
-              dateOfBirth: result.data.dateOfBirth
-                ? result.data.dateOfBirth.toISOString().split('T')[0]
+              dateOfBirth: result.data.date_of_birth
+                ? new Date(result.data.date_of_birth)
+                    .toISOString()
+                    .split('T')[0]
                 : '',
             });
           }
@@ -44,42 +46,40 @@ const Profile: React.FC = () => {
   }, []);
 
   const handleSave = async () => {
-    if (profile) {
-      try {
-        const user = await AuthService.getCurrentUser();
-        if (!user) {
-          alert('You must be logged in to update your profile');
-          return;
-        }
-
-        const updates = {
-          name: formData.name,
-          email: formData.email,
-          sport: formData.sport,
-          team: formData.team,
-          dateOfBirth: formData.dateOfBirth
-            ? new Date(formData.dateOfBirth)
-            : undefined,
-        };
-
-        const result = await DatabaseService.updateAthleteProfile(
-          user.id,
-          updates
-        );
-
-        if (result.error) {
-          alert(`Failed to save profile: ${result.error}`);
-          return;
-        }
-
-        if (result.data) {
-          setProfile(result.data);
-        }
-        setEditing(false);
-      } catch (error) {
-        console.error('Failed to save profile:', error);
-        alert('Failed to save profile. Please try again.');
+    try {
+      const user = await AuthService.getCurrentUser();
+      if (!user) {
+        alert('You must be logged in to update your profile');
+        return;
       }
+
+      const updates = {
+        name: formData.name,
+        email: formData.email,
+        sport: formData.sport,
+        team: formData.team,
+        date_of_birth: formData.dateOfBirth
+          ? new Date(formData.dateOfBirth)
+          : undefined,
+      };
+
+      const result = await DatabaseService.updateAthleteProfile(
+        user.id,
+        updates
+      );
+
+      if (result.error) {
+        alert(`Failed to save profile: ${result.error}`);
+        return;
+      }
+
+      if (result.data) {
+        setProfile(result.data);
+      }
+      setEditing(false);
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+      alert('Failed to save profile. Please try again.');
     }
   };
 
@@ -256,8 +256,8 @@ const Profile: React.FC = () => {
                 />
               ) : (
                 <p className="mt-1 text-sm text-gray-900">
-                  {profile?.dateOfBirth
-                    ? new Date(profile.dateOfBirth).toLocaleDateString()
+                  {profile?.date_of_birth
+                    ? new Date(profile.date_of_birth).toLocaleDateString()
                     : 'Not set'}
                 </p>
               )}

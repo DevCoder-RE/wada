@@ -29,9 +29,11 @@ describe('AuthGuard', () => {
       </AuthGuard>
     );
 
-    expect(screen.getByRole('generic', { hidden: true })).toHaveClass(
-      'animate-spin'
-    );
+    expect(
+      screen
+        .getAllByRole('generic', { hidden: true })
+        .some((el) => el.className.includes('animate-spin'))
+    ).toBe(true);
   });
 
   it('shows sign in form when not authenticated', async () => {
@@ -84,15 +86,15 @@ describe('AuthGuard', () => {
     fireEvent.change(screen.getByPlaceholderText('Email address'), {
       target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
-      target: { value: 'password' },
+    fireEvent.change(screen.getByPlaceholderText('Password (minimum 12 characters)'), {
+      target: { value: 'password1234' },
     });
     fireEvent.click(screen.getByText('Sign in'));
 
     await waitFor(() => {
       expect(mockAuthService.signIn).toHaveBeenCalledWith(
         'test@example.com',
-        'password'
+        'password1234'
       );
     });
   });
@@ -114,8 +116,8 @@ describe('AuthGuard', () => {
     fireEvent.change(screen.getByPlaceholderText('Email address'), {
       target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
-      target: { value: 'password' },
+    fireEvent.change(screen.getByPlaceholderText('Password (minimum 12 characters)'), {
+      target: { value: 'password1234' },
     });
     fireEvent.click(screen.getByText('Sign in'));
 
@@ -162,15 +164,15 @@ describe('AuthGuard', () => {
     fireEvent.change(screen.getByPlaceholderText('Email address'), {
       target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
-      target: { value: 'password' },
+    fireEvent.change(screen.getByPlaceholderText('Password (minimum 12 characters)'), {
+      target: { value: 'password1234' },
     });
     fireEvent.click(screen.getByText('Sign up'));
 
     await waitFor(() => {
       expect(mockAuthService.signUp).toHaveBeenCalledWith(
         'test@example.com',
-        'password'
+        'password1234'
       );
     });
   });

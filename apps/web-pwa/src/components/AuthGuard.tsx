@@ -7,6 +7,9 @@ interface AuthGuardProps {
 
 type AuthMode = 'signin' | 'signup' | 'reset';
 
+// Session timeout (30 minutes of inactivity)
+const SESSION_TIMEOUT = 30 * 60 * 1000;
+
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,9 +17,6 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const [error, setError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastActivity, setLastActivity] = useState(Date.now());
-
-  // Session timeout (30 minutes of inactivity)
-  const SESSION_TIMEOUT = 30 * 60 * 1000;
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -32,6 +32,16 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     };
 
     checkAuth();
+  }, []);
+
+  const handleSignOut = useCallback(async () => {
+    try {
+      await AuthService.signOut();
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error('Sign out failed:', error);
+      setError('Failed to sign out');
+    }
   }, []);
 
   // Activity tracking for session timeout
@@ -63,7 +73,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
       );
       clearInterval(interval);
     };
-  }, [isAuthenticated, lastActivity]);
+  }, [isAuthenticated, lastActivity, handleSignOut]);
 
   const handleSignIn = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -147,16 +157,6 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     },
     [isSubmitting]
   );
-
-  const handleSignOut = useCallback(async () => {
-    try {
-      await AuthService.signOut();
-      setIsAuthenticated(false);
-    } catch (error) {
-      console.error('Sign out failed:', error);
-      setError('Failed to sign out');
-    }
-  }, []);
 
   if (isLoading) {
     return (

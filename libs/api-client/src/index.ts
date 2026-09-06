@@ -16,6 +16,19 @@ import { supabaseConfig, realtimeConfig, apiConfig } from './config';
 // Export CertificationService
 export { CertificationService } from './certification-service';
 
+// Export Content Management and Affiliate Tracking services
+export { ContentManagementService } from './content-management.service';
+export { AffiliateTrackingService } from './affiliate-tracking.service';
+
+// Export Secure Logbook service and its types
+export { SecureLogbookService } from './secure-logbook.service';
+export type {
+  SecureLogbookEntry,
+  AuditEntry,
+  ComplianceSummary,
+  ComplianceAlert,
+} from './secure-logbook.service';
+
 // Create Supabase client with configuration
 export const supabase: SupabaseClient = createClient(
   supabaseConfig.url,
@@ -144,8 +157,7 @@ export class DatabaseService {
     try {
       const { data, error } = await supabase
         .from('athlete_profiles')
-        .update(updates)
-        .eq('user_id', userId)
+        .upsert({ user_id: userId, ...updates }, { onConflict: 'user_id' })
         .select()
         .single();
 

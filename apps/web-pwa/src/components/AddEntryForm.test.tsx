@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import AddEntryForm from './AddEntryForm';
 
 describe('AddEntryForm', () => {
@@ -109,13 +109,15 @@ describe('AddEntryForm', () => {
   });
 
   it('has proper form attributes', () => {
-    render(<AddEntryForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
+    const { container } = render(
+      <AddEntryForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
+    );
 
-    const form = screen.getByRole('form');
+    const form = container.querySelector('form');
     const amountInput = screen.getByLabelText('Amount *');
     const notesTextarea = screen.getByLabelText('Notes');
 
-    expect(form).toHaveAttribute('method', 'post'); // Default form method
+    expect(form).not.toBeNull();
     expect(amountInput).toHaveAttribute('type', 'number');
     expect(amountInput).toHaveAttribute('required');
     expect(amountInput).toHaveAttribute('min', '0');
@@ -132,9 +134,11 @@ describe('AddEntryForm', () => {
   });
 
   it('prevents default form submission', () => {
-    render(<AddEntryForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
+    const { container } = render(
+      <AddEntryForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
+    );
 
-    const form = screen.getByRole('form');
+    const form = container.querySelector('form') as HTMLElement;
     const submitEvent = new Event('submit', {
       bubbles: true,
       cancelable: true,

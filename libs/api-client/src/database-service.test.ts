@@ -46,6 +46,7 @@ describe('DatabaseService', () => {
     limit: jest.fn().mockReturnThis(),
     update: jest.fn().mockReturnThis(),
     insert: jest.fn().mockReturnThis(),
+    upsert: jest.fn().mockReturnThis(),
   };
 
   beforeEach(() => {

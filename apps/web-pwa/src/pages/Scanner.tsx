@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthService, DatabaseService } from '@wada-bmad/api-client';
-import type { Supplement } from '@wada-bmad/types';
 import BarcodeScanner from '../components/BarcodeScanner';
 import VerificationResults from '../components/VerificationResults';
 import RecentScans from '../components/RecentScans';
@@ -10,7 +9,7 @@ import { useScanner } from '../hooks/useScanner';
 
 const Scanner: React.FC = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState<string>('');
+  const [, setError] = useState<string>('');
 
   const {
     isScanning,

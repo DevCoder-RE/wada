@@ -298,7 +298,7 @@ describe('Education', () => {
 
     render(<Education />);
 
-    const cards = screen.getAllByText(/Article/);
+    const cards = screen.getAllByText(/Article/, { selector: 'h3' });
     expect(cards.length).toBe(6);
   });
 

@@ -10,10 +10,10 @@ This guide covers all configuration options for the WADA BMAD application.
 
 | File                    | Purpose              | Deployment        |
 | ----------------------- | -------------------- | ----------------- |
-| `.env`                  | Base defaults        | Committed to repo |
+| `.env`                  | Base defaults        | Not committed     |
 | `.env.local`            | Local overrides      | Not committed     |
-| `.env.development`      | Dev-specific         | Committed to repo |
-| `.env.production`       | Production defaults  | Committed to repo |
+| `.env.development`      | Dev-specific         | Not committed     |
+| `.env.production`       | Production defaults  | Not committed     |
 | `.env.production.local` | Local prod overrides | Not committed     |
 
 ### Environment Variable Priority
@@ -28,20 +28,23 @@ This guide covers all configuration options for the WADA BMAD application.
 
 ### Local Development
 
+The web app is built with Create React App, which only inlines variables that
+start with `REACT_APP_` into the browser bundle. Prefix the names accordingly.
+
 ```bash
 # .env.local
-SUPABASE_URL=http://localhost:54321
-SUPABASE_ANON_KEY=your-local-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-local-service-key
+REACT_APP_SUPABASE_URL=http://localhost:54321
+REACT_APP_SUPABASE_ANON_KEY=your-local-anon-key
+REACT_APP_SUPABASE_SERVICE_ROLE_KEY=your-local-service-key
 ```
 
 ### Production
 
 ```bash
 # .env.production.local
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+REACT_APP_SUPABASE_URL=https://your-project.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+REACT_APP_SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 ### Supabase Studio
@@ -96,9 +99,10 @@ const CERTIFICATION_CONFIG = {
 };
 ```
 
-### Mock Barcodes (Development)
+### Mock Barcodes (Test Data)
 
-The following barcodes are pre-configured for testing:
+The `supabase/seed.sql` file inserts sample supplements with barcodes that can
+be used for testing:
 
 | Barcode        | Product                                  | Certifications      |
 | -------------- | ---------------------------------------- | ------------------- |
@@ -108,6 +112,12 @@ The following barcodes are pre-configured for testing:
 | `123456789015` | Multivitamin (Centrum)                   | NSF                 |
 | `123456789016` | Fish Oil (Nordic Naturals)               | NSF                 |
 
+Verification is **database-driven**: `CertificationService` calls the
+`verify_supplement_by_barcode` RPC, which joins `supplements` →
+`supplement_certifications` → `certifications` and returns the real
+certification rows from the database. A supplement is reported as verified
+only when the database contains at least one linked certification.
+
 ---
 
 ## Database Configuration
@@ -116,13 +126,21 @@ The following barcodes are pre-configured for testing:
 
 RLS is enabled on all tables. Default policies:
 
-| Table              | Public Read | Authenticated Write | Notes                                 |
-| ------------------ | ----------- | ------------------- | ------------------------------------- |
-| `athlete_profiles` | No          | Owner only          | Users can only access own profile     |
-| `supplements`      | Yes         | Authenticated       | Anyone can view, auth users can edit  |
-| `certifications`   | Yes         | Authenticated       | Anyone can view, auth users can edit  |
-| `logbook_entries`  | No          | Owner only          | Coaches/admins can view athletes      |
-| `user_preferences` | No          | Owner only          | Users can only access own preferences |
+| Table                    | Public Read | Authenticated Write   | Notes                              |
+| ------------------------ | ----------- | --------------------- | ---------------------------------- |
+| `athlete_profiles`       | No          | Owner only            | Users can only access own profile  |
+| `supplements`            | Yes         | Authenticated         | Anyone can view, auth users can edit |
+| `certifications`         | Yes         | Authenticated         | Anyone can view, auth users can edit |
+| `logbook_entries`        | No          | Owner only            | Coaches/admins can view athletes   |
+| `user_preferences`       | No          | Owner only            | Users can only access own preferences |
+| `educational_content`    | Published   | Author/admin          | Drafts visible to author only      |
+| `content_categories`     | Active      | Admin only            | Public sees active categories      |
+| `affiliate_links`        | Active      | Creator/admin         | Creators manage their own links    |
+| `content_affiliate_links`| Active      | No client writes      | Placements are read-only from client |
+| `user_content_engagement`| Own rows    | Own rows              | Users manage their own engagement  |
+| `content_analytics`      | Author/admin | No client writes     | Analytics populated server-side    |
+| `affiliate_clicks`       | Creator/admin | Via RPC only         | Inserted by `track_affiliate_click` |
+| `affiliate_conversions`  | Creator/admin | Creator/admin        | Creators record own-link conversions |
 
 ### Realtime Subscriptions
 
@@ -271,8 +289,8 @@ Create `vercel.json` in `apps/web-pwa/`:
   "installCommand": "npm install",
   "framework": "react",
   "env": {
-    "VITE_SUPABASE_URL": "@supabase-url",
-    "VITE_SUPABASE_ANON_KEY": "@supabase-anon-key"
+    "REACT_APP_SUPABASE_URL": "@supabase-url",
+    "REACT_APP_SUPABASE_ANON_KEY": "@supabase-anon-key"
   }
 }
 ```
@@ -295,9 +313,9 @@ docker run -p 3000:80 wada-bmad:latest
 
 Configure environment variables in Coolify dashboard:
 
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
+- `REACT_APP_SUPABASE_URL`
+- `REACT_APP_SUPABASE_ANON_KEY`
+- `REACT_APP_SUPABASE_SERVICE_ROLE_KEY`
 
 ---
 

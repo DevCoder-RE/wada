@@ -32,9 +32,13 @@ export const useScanner = () => {
 
   useEffect(() => {
     const loadSupplements = async () => {
-      const result = await DatabaseService.getSupplements();
-      if (result.data) {
-        setSupplements(result.data);
+      try {
+        const result = await DatabaseService.getSupplements();
+        if (result.data) {
+          setSupplements(result.data);
+        }
+      } catch (error) {
+        console.error('Failed to load supplements:', error);
       }
     };
 
@@ -165,6 +169,7 @@ export const useScanner = () => {
   };
 
   const resetScanner = () => {
+    setIsScanning(false);
     setLastScanned('');
     setMatchedSupplement(null);
     setShowAddForm(false);
@@ -176,6 +181,7 @@ export const useScanner = () => {
     setIsScanning,
     lastScanned,
     scanHistory,
+    supplements,
     matchedSupplement,
     showAddForm,
     setShowAddForm,

@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import BarcodeScanner from './BarcodeScanner';
 
 // Mock Quagga
-jest.mock('@quagga2/quagga2', () => ({
+jest.mock('@ericblade/quagga2', () => ({
   init: jest.fn(),
   start: jest.fn(),
   stop: jest.fn(),
@@ -15,7 +15,7 @@ jest.mock('@wada-bmad/utils', () => ({
   parseBarcode: jest.fn(),
 }));
 
-const mockQuagga = require('@quagga2/quagga2');
+const mockQuagga = require('@ericblade/quagga2');
 const mockUtils = require('@wada-bmad/utils');
 
 describe('BarcodeScanner', () => {
@@ -210,12 +210,10 @@ describe('BarcodeScanner', () => {
       <BarcodeScanner
         onBarcodeDetected={mockOnBarcodeDetected}
         onError={mockOnError}
-        isScanning={false}
+        isScanning={true}
         onScanningChange={mockOnScanningChange}
       />
     );
-
-    fireEvent.click(screen.getByText('Start Scanning'));
 
     await waitFor(() => {
       expect(mockOnError).toHaveBeenCalledWith(

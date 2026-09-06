@@ -2,6 +2,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Scanner from './Scanner';
 
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
 // Mock the components
 jest.mock('../components/BarcodeScanner', () => {
   return function MockBarcodeScanner({
@@ -103,16 +110,8 @@ const mockAuthService = require('@wada-bmad/api-client').AuthService;
 const mockDatabaseService = require('@wada-bmad/api-client').DatabaseService;
 
 describe('Scanner', () => {
-  const mockNavigate = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
-
-    // Mock useNavigate
-    jest.mock('react-router-dom', () => ({
-      ...jest.requireActual('react-router-dom'),
-      useNavigate: () => mockNavigate,
-    }));
 
     // Mock useScanner hook
     mockUseScanner.mockReturnValue({
@@ -353,7 +352,7 @@ describe('Scanner', () => {
 
   it('handles authentication error during entry submission', async () => {
     const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
-    mockAuthService.getCurrentUser.mockResolvedValue(null);
+    mockAuthService.getCurrentUser.mockRejectedValue(new Error('Auth failed'));
 
     mockUseScanner.mockReturnValue({
       isScanning: false,

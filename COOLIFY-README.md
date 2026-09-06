@@ -50,10 +50,15 @@ DB_PASSWORD=your-secure-database-password
 JWT_SECRET=your-super-secret-jwt-token-with-at-least-32-characters-long
 SECRET_KEY_BASE=your-secret-key-base-for-realtime-service
 
-# Supabase Configuration
+# Supabase Configuration (used by the Supabase services)
 SUPABASE_URL=https://your-coolify-domain.com
 SUPABASE_ANON_KEY=your-production-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-production-service-role-key
+
+# Web Application (build-time, CRA inlines REACT_APP_* only)
+REACT_APP_SUPABASE_URL=https://your-coolify-domain.com
+REACT_APP_SUPABASE_ANON_KEY=your-production-anon-key
+REACT_APP_SUPABASE_SERVICE_ROLE_KEY=your-production-service-role-key
 
 # Application Configuration
 SITE_URL=https://your-coolify-domain.com
@@ -112,10 +117,15 @@ DB_PASSWORD=apex_secure_password_2024
 JWT_SECRET=your-super-secret-jwt-token-with-at-least-32-characters-long
 SECRET_KEY_BASE=your-secret-key-base-for-realtime-service
 
-# Supabase
+# Supabase (used by the Supabase services)
 SUPABASE_URL=https://your-app.coolify-domain.com
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# Web Application (build-time, CRA inlines REACT_APP_* only)
+REACT_APP_SUPABASE_URL=https://your-app.coolify-domain.com
+REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+REACT_APP_SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # Application
 SITE_URL=https://your-app.coolify-domain.com

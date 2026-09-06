@@ -223,26 +223,30 @@ describe('useContentManagement', () => {
         title: 'Updated Title',
       };
 
-      mockContentManagementService.updateEducationalContent.mockResolvedValue({
-        data: updatedContent,
-        error: undefined,
-      });
+mockContentManagementService.getEducationalContent.mockResolvedValue({
+      data: [existingContent],
+      error: undefined,
+    });
 
-      const { result } = renderHook(() =>
-        useContentManagement({ autoLoad: false })
-      );
+    mockContentManagementService.updateEducationalContent.mockResolvedValue({
+      data: updatedContent,
+      error: undefined,
+    });
 
-      // Set initial content
-      act(() => {
-        result.current.content = [existingContent];
-      });
+    const { result } = renderHook(() =>
+      useContentManagement({ autoLoad: false })
+    );
 
-      let updatedResult: any = null;
-      await act(async () => {
-        updatedResult = await result.current.updateContent('1', {
-          title: 'Updated Title',
-        });
+    await act(async () => {
+      await result.current.loadContent();
+    });
+
+    let updatedResult: any = null;
+    await act(async () => {
+      updatedResult = await result.current.updateContent('1', {
+        title: 'Updated Title',
       });
+    });
 
       expect(updatedResult).toEqual(updatedContent);
       expect(result.current.content[0].title).toBe('Updated Title');
@@ -419,14 +423,18 @@ describe('useContentManagement', () => {
   });
 
   describe('clearError', () => {
-    it('should clear error state', () => {
+    it('should clear error state', async () => {
+      mockContentManagementService.getEducationalContent.mockResolvedValue({
+        data: [],
+        error: 'Test error',
+      });
+
       const { result } = renderHook(() =>
         useContentManagement({ autoLoad: false })
       );
 
-      // Set an error
-      act(() => {
-        (result.current as any).error = 'Test error';
+      await act(async () => {
+        await result.current.loadContent();
       });
 
       expect(result.current.error).toBe('Test error');

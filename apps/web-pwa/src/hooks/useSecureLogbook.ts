@@ -165,9 +165,11 @@ export const useSecureLogbook = (
           }
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to update entry');
+        const message =
+          err instanceof Error ? err.message : 'Failed to update entry';
         // Revert optimistic update on error
         await loadData();
+        setError(message);
       }
     },
     [options.athleteId, loadData]

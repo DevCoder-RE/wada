@@ -1,5 +1,4 @@
-import { CertificationService } from './index';
-import type { Certification } from '@wada-bmad/types';
+import { CertificationService, DatabaseService } from './index';
 
 // Mock localStorage
 const localStorageMock = {
@@ -9,6 +8,22 @@ const localStorageMock = {
   clear: jest.fn(),
 };
 global.localStorage = localStorageMock as any;
+
+const MOCK_DB_ROW = {
+  supplement_id: 'supp-1',
+  name: 'Creatine Monohydrate',
+  brand: 'MuscleTech',
+  description: 'Pure creatine for strength and power',
+  certifications: [
+    {
+      id: 'cert-1',
+      name: 'NSF Certified for Sport',
+      issuer: 'NSF International',
+      type: 'NSF' as const,
+      valid_until: '2025-12-31',
+    },
+  ],
+};
 
 describe('CertificationService', () => {
   beforeEach(() => {
@@ -58,95 +73,73 @@ describe('CertificationService', () => {
       );
     });
 
-    it('should verify with external APIs if no cache available', async () => {
-      localStorageMock.getItem.mockReturnValue(null);
-
-      // Mock the external API calls
-      const mockVerifyWithNSF = jest.spyOn(
-        CertificationService as any,
-        'verifyWithNSF'
-      );
-      mockVerifyWithNSF.mockResolvedValue({
-        verified: true,
-        validUntil: new Date(),
-      });
-
-      const mockVerifyWithInformedSport = jest.spyOn(
-        CertificationService as any,
-        'verifyWithInformedSport'
-      );
-      mockVerifyWithInformedSport.mockResolvedValue({ verified: false });
-
-      const mockVerifyWithGlobalDRO = jest.spyOn(
-        CertificationService as any,
-        'verifyWithGlobalDRO'
-      );
-      mockVerifyWithGlobalDRO.mockResolvedValue({
-        verified: true,
-        validUntil: new Date(),
-      });
-
-      const mockGetSupplementInfo = jest.spyOn(
-        CertificationService as any,
-        'getSupplementInfo'
-      );
-      mockGetSupplementInfo.mockResolvedValue({
-        name: 'Test Supplement',
-        brand: 'Test Brand',
-        description: 'Test Description',
-      });
+    it('should verify supplement using database certification data', async () => {
+      jest
+        .spyOn(DatabaseService, 'verifySupplementByBarcode')
+        .mockResolvedValue({ data: MOCK_DB_ROW } as any);
 
       const result =
-        await CertificationService.verifyBarcodeWithCertifications('123456789');
+        await CertificationService.verifyBarcodeWithCertifications(
+          '123456789013'
+        );
 
       expect(result.data.verified).toBe(true);
-      expect(result.data.certifications).toHaveLength(2);
+      expect(result.data.certifications).toHaveLength(1);
+      expect(result.data.certifications[0]).toMatchObject({
+        type: 'NSF',
+        name: 'NSF Certified for Sport',
+        issuer: 'NSF International',
+      });
+      expect(result.data.supplement).toEqual({
+        name: 'Creatine Monohydrate',
+        brand: 'MuscleTech',
+        description: 'Pure creatine for strength and power',
+      });
       expect(result.data.cached).toBe(false);
       expect(localStorageMock.setItem).toHaveBeenCalled();
     });
 
-    it('should handle API failures gracefully', async () => {
-      localStorageMock.getItem.mockReturnValue(null);
-
-      // Mock all external API calls to fail
-      const mockVerifyWithNSF = jest.spyOn(
-        CertificationService as any,
-        'verifyWithNSF'
-      );
-      mockVerifyWithNSF.mockRejectedValue(new Error('API Error'));
-
-      const mockVerifyWithInformedSport = jest.spyOn(
-        CertificationService as any,
-        'verifyWithInformedSport'
-      );
-      mockVerifyWithInformedSport.mockRejectedValue(new Error('API Error'));
-
-      const mockVerifyWithGlobalDRO = jest.spyOn(
-        CertificationService as any,
-        'verifyWithGlobalDRO'
-      );
-      mockVerifyWithGlobalDRO.mockRejectedValue(new Error('API Error'));
-
-      // Mock DatabaseService fallback
-      const mockDatabaseService = jest.spyOn(
-        require('./index'),
-        'DatabaseService'
-      );
-      mockDatabaseService.verifySupplementByBarcode = jest
-        .fn()
+    it('should return unverified when the supplement has no certifications', async () => {
+      jest
+        .spyOn(DatabaseService, 'verifySupplementByBarcode')
         .mockResolvedValue({
-          data: {
-            name: 'Fallback Supplement',
-            brand: 'Fallback Brand',
-            certifications: [],
-          },
-        });
+          data: { ...MOCK_DB_ROW, certifications: [] },
+        } as any);
+
+      const result =
+        await CertificationService.verifyBarcodeWithCertifications(
+          '123456789099'
+        );
+
+      expect(result.data.verified).toBe(false);
+      expect(result.data.certifications).toEqual([]);
+      expect(result.data.supplement?.name).toBe('Creatine Monohydrate');
+    });
+
+    it('should return unverified for an unknown barcode', async () => {
+      jest
+        .spyOn(DatabaseService, 'verifySupplementByBarcode')
+        .mockResolvedValue({ data: null } as any);
+
+      const result =
+        await CertificationService.verifyBarcodeWithCertifications('unknown');
+
+      expect(result.data.verified).toBe(false);
+      expect(result.data.certifications).toEqual([]);
+      expect(result.data.supplement).toBeUndefined();
+      expect(result.error).toBeUndefined();
+    });
+
+    it('should handle verification errors', async () => {
+      jest
+        .spyOn(DatabaseService, 'verifySupplementByBarcode')
+        .mockRejectedValue(new Error('Network error'));
 
       const result =
         await CertificationService.verifyBarcodeWithCertifications('123456789');
 
-      expect(result.data.verified).toBe(true);
-      expect(result.data.cached).toBe(true);
+      expect(result.data.verified).toBe(false);
+      expect(result.error).toBe('Network error');
     });
   });
 

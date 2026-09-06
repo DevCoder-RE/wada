@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import Quagga from '@quagga2/quagga2';
+import Quagga from '@ericblade/quagga2';
 
 interface BarcodeScannerProps {
   onScan: (barcode: string) => void;

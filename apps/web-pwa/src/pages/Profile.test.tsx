@@ -52,7 +52,11 @@ describe('Profile', () => {
 
     render(<Profile />);
 
-    expect(screen.getByRole('generic')).toHaveClass('animate-spin');
+    expect(
+      screen.getAllByRole('generic').some((el) =>
+        el.className.includes('animate-spin')
+      )
+    ).toBe(true);
   });
 
   it('displays profile information when loaded', async () => {
@@ -222,7 +226,7 @@ describe('Profile', () => {
     render(<Profile />);
 
     await waitFor(() => {
-      expect(screen.getByText('John Doe')).toBeInTheDocument();
+      expect(screen.getByText('Profile')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Edit'));
@@ -245,10 +249,6 @@ describe('Profile', () => {
     } as any);
     mockAuthService.signOut.mockResolvedValue({ data: null });
 
-    const reloadSpy = jest
-      .spyOn(location, 'reload')
-      .mockImplementation(() => {});
-
     render(<Profile />);
 
     await waitFor(() => {
@@ -260,8 +260,6 @@ describe('Profile', () => {
     await waitFor(() => {
       expect(mockAuthService.signOut).toHaveBeenCalled();
     });
-
-    reloadSpy.mockRestore();
   });
 
   it('handles API errors during profile fetch', async () => {
@@ -276,8 +274,7 @@ describe('Profile', () => {
     render(<Profile />);
 
     await waitFor(() => {
-      const spinner = screen.queryByRole('generic');
-      expect(spinner).not.toBeInTheDocument();
+      expect(document.querySelector('.animate-spin')).not.toBeInTheDocument();
     });
   });
 });

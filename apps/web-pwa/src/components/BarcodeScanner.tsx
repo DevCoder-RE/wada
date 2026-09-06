@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import Quagga from '@quagga2/quagga2';
+import { useEffect, useRef } from 'react';
+import Quagga from '@ericblade/quagga2';
 import { isValidBarcode, parseBarcode } from '@wada-bmad/utils';
 
 interface BarcodeScannerProps {
@@ -140,6 +140,9 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           errorMessage += 'Camera access requires a secure connection (HTTPS).';
         } else {
           errorMessage += error.message;
+          if (!error.message.endsWith('.')) {
+            errorMessage += '.';
+          }
         }
       }
 

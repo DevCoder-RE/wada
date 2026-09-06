@@ -7,6 +7,7 @@ import {
   SecureLogbookService,
   DatabaseService,
   AuthService,
+  CertificationService,
 } from '@wada-bmad/api-client';
 
 // Mock dependencies
@@ -24,6 +25,9 @@ jest.mock('@wada-bmad/api-client', () => ({
   AuthService: {
     getCurrentUser: jest.fn(),
   },
+  CertificationService: {
+    verifyBarcodeWithCertifications: jest.fn(),
+  },
 }));
 
 const mockSecureLogbookService = SecureLogbookService as jest.Mocked<
@@ -33,6 +37,9 @@ const mockDatabaseService = DatabaseService as jest.Mocked<
   typeof DatabaseService
 >;
 const mockAuthService = AuthService as jest.Mocked<typeof AuthService>;
+const mockCertificationService = CertificationService as jest.Mocked<
+  typeof CertificationService
+>;
 
 describe('useSecureLogbook', () => {
   const mockUser = { id: 'user-123', email: 'test@example.com' };
@@ -91,6 +98,10 @@ describe('useSecureLogbook', () => {
     });
     mockSecureLogbookService.getComplianceSummary.mockResolvedValue({
       data: mockComplianceSummary,
+      error: undefined,
+    });
+    mockCertificationService.verifyBarcodeWithCertifications.mockResolvedValue({
+      data: { certifications: [] },
       error: undefined,
     });
   });
@@ -255,12 +266,21 @@ describe('useSecureLogbook', () => {
     expect(mockSecureLogbookService.getComplianceSummary).toHaveBeenCalled();
   });
 
-  it('should clear error', () => {
+  it('should clear error', async () => {
+    mockSecureLogbookService.createSecureEntry.mockResolvedValue({
+      data: {} as any,
+      error: 'Test error',
+    });
+
     const { result } = renderHook(() => useSecureLogbook({ autoLoad: false }));
 
-    // Simulate an error
-    act(() => {
-      (result.current as any).error = 'Test error';
+    await act(async () => {
+      await result.current.createEntry({
+        athleteId: 'user-123',
+        supplementId: 'supp-1',
+        amount: 100,
+        unit: 'mg',
+      } as any);
     });
 
     expect(result.current.error).toBe('Test error');

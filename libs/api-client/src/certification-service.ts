@@ -20,66 +20,19 @@ interface CertificationData {
   cached: boolean;
 }
 
-const MOCK_CERTIFIED_BARCODES: Record<
-  string,
-  { name: string; brand: string; certifications: string[] }
-> = {
-  '123456789012': {
-    name: 'Whey Protein Isolate',
-    brand: 'Optimum Nutrition',
-    certifications: ['NSF', 'Informed_Sport'],
-  },
-  '123456789013': {
-    name: 'Creatine Monohydrate',
-    brand: 'MuscleTech',
-    certifications: ['NSF', 'Informed_Sport'],
-  },
-  '123456789014': {
-    name: 'BCAA Complex',
-    brand: 'Scivation',
-    certifications: ['Informed_Sport'],
-  },
-  '123456789015': {
-    name: 'Multivitamin',
-    brand: 'Centrum',
-    certifications: ['NSF'],
-  },
-  '123456789016': {
-    name: 'Fish Oil',
-    brand: 'Nordic Naturals',
-    certifications: ['NSF'],
-  },
-};
-
-const CERTIFICATION_MAP: Record<
-  string,
-  Omit<Certification, 'id' | 'created_at' | 'updated_at'>
-> = {
-  NSF: {
-    name: 'NSF Certified for Sport',
-    issuer: 'NSF International',
-    type: 'NSF',
-    valid_until: new Date('2025-12-31'),
-  },
-  Informed_Sport: {
-    name: 'Informed Sport',
-    issuer: 'LGC',
-    type: 'Informed_Sport',
-    valid_until: new Date('2025-12-31'),
-  },
-  ISO_17025: {
-    name: 'ISO 17025 Accredited',
-    issuer: 'ISO',
-    type: 'ISO_17025',
-    valid_until: new Date('2025-12-31'),
-  },
-  WADA_Compliant: {
-    name: 'WADA Compliant',
-    issuer: 'WADA',
-    type: 'WADA_Compliant',
-    valid_until: new Date('2025-12-31'),
-  },
-};
+interface CertifiedSupplementRow {
+  supplement_id: string;
+  name: string;
+  brand: string;
+  description?: string;
+  certifications: Array<{
+    id: string;
+    name: string;
+    issuer: string;
+    type: Certification['type'];
+    valid_until?: string;
+  }>;
+}
 
 export class CertificationService {
   static async verifyBarcodeWithCertifications(
@@ -96,96 +49,11 @@ export class CertificationService {
         };
       }
 
-      const [nsfResult, informedSportResult, globalDROResult] =
-        await Promise.all([
-          this.verifyWithNSF(barcode),
-          this.verifyWithInformedSport(barcode),
-          this.verifyWithGlobalDRO(barcode),
-        ]);
-
-      const certifications: Certification[] = [];
-
-      if (nsfResult.verified && nsfResult.certificationType) {
-        const cert = CERTIFICATION_MAP[nsfResult.certificationType];
-        if (cert) {
-          certifications.push({
-            id: `cert-${Date.now()}-nsf`,
-            ...cert,
-            created_at: new Date(),
-            updated_at: new Date(),
-          });
-        }
-      }
-
-      if (
-        informedSportResult.verified &&
-        informedSportResult.certificationType
-      ) {
-        const cert = CERTIFICATION_MAP[informedSportResult.certificationType];
-        if (cert) {
-          certifications.push({
-            id: `cert-${Date.now()}-is`,
-            ...cert,
-            created_at: new Date(),
-            updated_at: new Date(),
-          });
-        }
-      }
-
-      if (globalDROResult.verified && globalDROResult.certificationType) {
-        const cert = CERTIFICATION_MAP[globalDROResult.certificationType];
-        if (cert) {
-          certifications.push({
-            id: `cert-${Date.now()}-gdro`,
-            ...cert,
-            created_at: new Date(),
-            updated_at: new Date(),
-          });
-        }
-      }
-
-      let supplement: CertificationData['supplement'] | undefined;
-
-      const mockData = MOCK_CERTIFIED_BARCODES[barcode];
-      if (mockData) {
-        supplement = {
-          name: mockData.name,
-          brand: mockData.brand,
-        };
-      } else {
-        const dbResult = await this.getSupplementInfo(barcode);
-        if (dbResult) {
-          supplement = dbResult;
-        }
-      }
-
-      const result: CertificationData = {
-        verified: certifications.length > 0,
-        certifications,
-        supplement,
-        cached: false,
-      };
-
+      const result = await this.verifyFromDatabase(barcode);
       this.cacheVerification(barcode, result);
 
       return { data: result };
     } catch (error) {
-      const dbFallback =
-        await DatabaseService.verifySupplementByBarcode(barcode);
-      if (dbFallback.data) {
-        return {
-          data: {
-            verified: false,
-            certifications: [],
-            supplement: {
-              name: dbFallback.data.name || 'Unknown',
-              brand: dbFallback.data.brand || 'Unknown',
-            },
-            cached: true,
-          },
-        };
-      }
-
       return {
         data: {
           verified: false,
@@ -197,61 +65,44 @@ export class CertificationService {
     }
   }
 
-  private static async verifyWithNSF(
+  private static async verifyFromDatabase(
     barcode: string
-  ): Promise<{ verified: boolean; certificationType?: string }> {
-    const mockData = MOCK_CERTIFIED_BARCODES[barcode];
-    if (mockData && mockData.certifications.includes('NSF')) {
+  ): Promise<CertificationData> {
+    const result = await DatabaseService.verifySupplementByBarcode(barcode);
+    const row = result.data as CertifiedSupplementRow | null;
+
+    if (!row) {
       return {
-        verified: true,
-        certificationType: 'NSF',
+        verified: false,
+        certifications: [],
+        cached: false,
       };
     }
-    return { verified: false };
-  }
 
-  private static async verifyWithInformedSport(
-    barcode: string
-  ): Promise<{ verified: boolean; certificationType?: string }> {
-    const mockData = MOCK_CERTIFIED_BARCODES[barcode];
-    if (mockData && mockData.certifications.includes('Informed_Sport')) {
-      return {
-        verified: true,
-        certificationType: 'Informed_Sport',
-      };
-    }
-    return { verified: false };
-  }
+    const certifications: Certification[] = (row.certifications || []).map(
+      (cert) => ({
+        id: cert.id,
+        name: cert.name,
+        issuer: cert.issuer,
+        type: cert.type,
+        valid_until: cert.valid_until
+          ? new Date(cert.valid_until)
+          : undefined,
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+    );
 
-  private static async verifyWithGlobalDRO(
-    barcode: string
-  ): Promise<{ verified: boolean; certificationType?: string }> {
-    const mockData = MOCK_CERTIFIED_BARCODES[barcode];
-    if (mockData && mockData.certifications.includes('WADA_Compliant')) {
-      return {
-        verified: true,
-        certificationType: 'WADA_Compliant',
-      };
-    }
-    return { verified: false };
-  }
-
-  private static async getSupplementInfo(
-    barcode: string
-  ): Promise<{ name: string; brand: string; description?: string } | null> {
-    try {
-      const result = await DatabaseService.verifySupplementByBarcode(barcode);
-      if (result.data) {
-        return {
-          name: result.data.name || 'Unknown Supplement',
-          brand: result.data.brand || 'Unknown Brand',
-          description: result.data.description,
-        };
-      }
-      return null;
-    } catch {
-      return null;
-    }
+    return {
+      verified: certifications.length > 0,
+      certifications,
+      supplement: {
+        name: row.name || 'Unknown Supplement',
+        brand: row.brand || 'Unknown Brand',
+        description: row.description,
+      },
+      cached: false,
+    };
   }
 
   private static getCachedVerification(barcode: string): CacheEntry | null {

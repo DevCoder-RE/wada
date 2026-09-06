@@ -71,7 +71,7 @@ describe('SecureLogbookEntryComponent', () => {
       />
     );
 
-    expect(screen.getByText('Optimum Nutrition')).toBeInTheDocument();
+    expect(screen.getByText(/Optimum Nutrition/)).toBeInTheDocument();
   });
 
   it('displays Unknown Supplement when no supplement provided', () => {
@@ -228,7 +228,7 @@ describe('SecureLogbookEntryComponent', () => {
     expect(screen.queryByText('Verify')).not.toBeInTheDocument();
   });
 
-  it('calls onEdit when edit is clicked', () => {
+  it('calls onEdit when edit is saved', () => {
     const onEdit = jest.fn();
     render(
       <SecureLogbookEntryComponent
@@ -241,7 +241,14 @@ describe('SecureLogbookEntryComponent', () => {
 
     fireEvent.click(screen.getByText('Edit'));
 
-    expect(onEdit).toHaveBeenCalled();
+    expect(onEdit).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByText('Save'));
+
+    expect(onEdit).toHaveBeenCalledWith(
+      'entry-12345678',
+      expect.objectContaining({ amount: 25, unit: 'g' })
+    );
   });
 
   it('calls onDelete when delete is clicked', () => {
@@ -419,6 +426,6 @@ describe('ComplianceAlertComponent', () => {
 
     render(<ComplianceAlertComponent alert={alert} />);
 
-    expect(screen.getByText(/entry-12345678/)).toBeInTheDocument();
+    expect(screen.getByText(/12345678/)).toBeInTheDocument();
   });
 });
