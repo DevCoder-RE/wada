@@ -1,6 +1,6 @@
 // Content Management Service for educational content and affiliate tracking
 
-import { supabase } from './index';
+import { supabase } from './client';
 import type {
   EducationalContent,
   ContentCategory,

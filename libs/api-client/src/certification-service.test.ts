@@ -130,6 +130,49 @@ describe('CertificationService', () => {
       expect(result.error).toBeUndefined();
     });
 
+    it('should ignore corrupted cache entries', async () => {
+      jest
+        .spyOn(DatabaseService, 'verifySupplementByBarcode')
+        .mockResolvedValue({ data: MOCK_DB_ROW } as any);
+
+      localStorageMock.getItem.mockReturnValue(
+        JSON.stringify({
+          '123456789': {
+            data: 'not-a-cache-entry',
+            timestamp: Date.now(),
+          },
+        })
+      );
+
+      const result =
+        await CertificationService.verifyBarcodeWithCertifications(
+          '123456789'
+        );
+
+      expect(result.data.verified).toBe(true);
+      expect(DatabaseService.verifySupplementByBarcode).toHaveBeenCalledWith(
+        '123456789'
+      );
+    });
+
+    it('should ignore invalid JSON cache payloads', async () => {
+      jest
+        .spyOn(DatabaseService, 'verifySupplementByBarcode')
+        .mockResolvedValue({ data: MOCK_DB_ROW } as any);
+
+      localStorageMock.getItem.mockReturnValue('not valid json {');
+
+      const result =
+        await CertificationService.verifyBarcodeWithCertifications(
+          '123456789'
+        );
+
+      expect(result.data.verified).toBe(true);
+      expect(DatabaseService.verifySupplementByBarcode).toHaveBeenCalledWith(
+        '123456789'
+      );
+    });
+
     it('should handle verification errors', async () => {
       jest
         .spyOn(DatabaseService, 'verifySupplementByBarcode')

@@ -54,7 +54,6 @@ jest.mock('./index', () => ({
           eq: jest.fn(),
         })),
         rpc: jest.fn(),
-        raw: jest.fn(),
       })),
     })),
   },
@@ -229,30 +228,45 @@ describe('AffiliateTrackingService', () => {
       };
 
       const mockSupabase = supabase as any;
-      mockSupabase.from
-        .mockReturnValueOnce({
-          insert: jest.fn(() => ({
-            select: jest.fn(() => ({
-              single: jest
-                .fn()
-                .mockResolvedValue({
-                  data: mockRecordedConversion,
-                  error: null,
-                }),
-            })),
-          })),
-        })
-        .mockReturnValueOnce({
-          update: jest.fn(() => ({
-            eq: jest.fn().mockResolvedValue({ error: null }),
-          })),
-        });
+      mockSupabase.rpc.mockResolvedValue({
+        data: mockRecordedConversion,
+        error: null,
+      });
 
       const result =
         await AffiliateTrackingService.recordAffiliateConversion(conversion);
 
       expect(result.data).toEqual(mockRecordedConversion);
       expect(result.error).toBeUndefined();
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'record_affiliate_conversion',
+        expect.objectContaining({
+          affiliate_uuid: 'affiliate-1',
+          commission: 25.5,
+        })
+      );
+    });
+
+    it('should handle errors when recording conversion', async () => {
+      const conversion = {
+        affiliate_link_id: 'affiliate-1',
+        click_id: 'click-1',
+        commission_amount: 10,
+        order_id: 'order-1',
+        status: 'pending' as const,
+      };
+
+      const mockSupabase = supabase as any;
+      mockSupabase.rpc.mockResolvedValue({
+        data: null,
+        error: { message: 'Conversion failed' },
+      });
+
+      const result =
+        await AffiliateTrackingService.recordAffiliateConversion(conversion);
+
+      expect(result.data).toEqual({});
+      expect(result.error).toBe('Failed to record affiliate conversion');
     });
   });
 

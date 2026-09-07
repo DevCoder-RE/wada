@@ -1,8 +1,10 @@
 // Secure Logbook Service for WADA BMAD
 // Implements secure data storage and verification integration
 
-import { supabase } from './index';
-import { DatabaseService, AuthService, CertificationService } from './index';
+import { supabase } from './client';
+import { DatabaseService } from './database.service';
+import { AuthService } from './auth.service';
+import { CertificationService } from './certification-service';
 import type {
   LogbookEntry,
   ApiResponse,

@@ -1,6 +1,6 @@
 // Affiliate Tracking Service for managing affiliate links and conversions
 
-import { supabase } from './index';
+import { supabase } from './client';
 import type {
   AffiliateLink,
   AffiliateClick,
@@ -275,29 +275,19 @@ export class AffiliateTrackingService {
     conversion: Omit<AffiliateConversion, 'id' | 'converted_at'>
   ): Promise<ApiResponse<AffiliateConversion>> {
     try {
-      const { data, error } = await supabase
-        .from('affiliate_conversions')
-        .insert({
-          ...conversion,
-          converted_at: new Date().toISOString(),
-        })
-        .select()
-        .single();
+      const { data, error } = await supabase.rpc('record_affiliate_conversion', {
+        affiliate_uuid: conversion.affiliate_link_id,
+        commission: conversion.commission_amount,
+        click_uuid: conversion.click_id,
+        user_uuid: conversion.user_id,
+        order_text: conversion.order_id,
+        currency_text: conversion.currency,
+        status_text: conversion.status,
+      });
 
       if (error) throw error;
 
-      // Update affiliate link conversion count and revenue
-      await supabase
-        .from('affiliate_links')
-        .update({
-          conversion_count: supabase.raw('conversion_count + 1'),
-          total_revenue: supabase.raw(
-            `total_revenue + ${conversion.commission_amount}`
-          ),
-        })
-        .eq('id', conversion.affiliate_link_id);
-
-      return { data };
+      return { data: data as AffiliateConversion };
     } catch (error) {
       return {
         data: {} as AffiliateConversion,

@@ -1,13 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useContentManagement } from '../hooks/useContentManagement';
 
 const Education: React.FC = () => {
   const { content, loading, error, loadContent } =
     useContentManagement({ autoLoad: true });
-
-  useEffect(() => {
-    loadContent();
-  }, [loadContent]);
 
   const staticTopics = useMemo(
     () => [

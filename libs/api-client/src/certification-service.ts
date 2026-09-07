@@ -1,5 +1,5 @@
 import type { ApiResponse, Certification } from '@wada-bmad/types';
-import { DatabaseService } from './index';
+import { DatabaseService } from './database.service';
 
 const CACHE_KEY = 'certification_cache';
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
@@ -105,13 +105,32 @@ export class CertificationService {
     };
   }
 
+  private static isValidCacheEntry(entry: unknown): entry is CacheEntry {
+    if (!entry || typeof entry !== 'object') return false;
+
+    const e = entry as CacheEntry;
+    return (
+      typeof e.timestamp === 'number' &&
+      Number.isFinite(e.timestamp) &&
+      !!e.data &&
+      typeof e.data === 'object' &&
+      typeof e.data.verified === 'boolean' &&
+      Array.isArray(e.data.certifications)
+    );
+  }
+
   private static getCachedVerification(barcode: string): CacheEntry | null {
     try {
       const cacheData = localStorage.getItem(CACHE_KEY);
       if (!cacheData) return null;
 
-      const cache = JSON.parse(cacheData) as Record<string, CacheEntry>;
-      return cache[barcode] || null;
+      const parsed: unknown = JSON.parse(cacheData);
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        return null;
+      }
+
+      const entry = (parsed as Record<string, unknown>)[barcode];
+      return this.isValidCacheEntry(entry) ? entry : null;
     } catch {
       return null;
     }
@@ -122,10 +141,29 @@ export class CertificationService {
     data: CertificationData
   ): void {
     try {
+      const cache: Record<string, CacheEntry> = {};
       const cacheData = localStorage.getItem(CACHE_KEY);
-      const cache = cacheData
-        ? (JSON.parse(cacheData) as Record<string, CacheEntry>)
-        : {};
+
+      if (cacheData) {
+        try {
+          const parsed: unknown = JSON.parse(cacheData);
+          if (
+            parsed &&
+            typeof parsed === 'object' &&
+            !Array.isArray(parsed)
+          ) {
+            for (const [key, value] of Object.entries(
+              parsed as Record<string, unknown>
+            )) {
+              if (this.isValidCacheEntry(value)) {
+                cache[key] = value;
+              }
+            }
+          }
+        } catch {
+          // Corrupt cache — start fresh
+        }
+      }
 
       cache[barcode] = {
         data,
