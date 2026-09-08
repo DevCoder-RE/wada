@@ -1,7 +1,10 @@
 # Coolify Deployment Configuration for Apex Performance
 # Full self-hosted Supabase + Application stack
-
-version: '3.8'
+#
+# Coolify proxy handles public access via the web service domain. No host ports
+# are published; Postgres, PostgREST, auth, storage, and realtime are reachable
+# only from within the compose network. The web container's nginx.conf proxies
+# /rest/v1, /auth/v1, /storage/v1, and /realtime/v1 to those services.
 
 services:
   # PostgreSQL Database
@@ -16,8 +19,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./supabase/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
-    ports:
-      - '5432:5432'
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres -d postgres']
       interval: 10s
@@ -38,8 +39,6 @@ services:
       PGRST_DB_ANON_ROLE: anon
       PGRST_JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-token-with-at-least-32-characters-long}
       PGRST_JWT_DEFAULT_ROLE: authenticated
-    ports:
-      - '54321:3000'
 
   # Supabase Auth
   auth:
@@ -65,8 +64,6 @@ services:
       GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL}
       GOTRUE_MAILER_SECURE_EMAIL_CHANGE_ENABLED: false
       GOTRUE_EXTERNAL_PHONE_ENABLED: false
-    ports:
-      - '54322:9999'
 
   # Supabase Storage
   storage:
@@ -85,8 +82,6 @@ services:
       FILE_SIZE_LIMIT: 52428800
     volumes:
       - storage_data:/var/lib/storage
-    ports:
-      - '54323:5000'
 
   # Supabase Realtime
   realtime:
@@ -111,8 +106,6 @@ services:
       ENABLE_TAILSCALE: false
       DNS_NODES: "''"
       RLIMIT_NOFILE: '10000'
-    ports:
-      - '54324:4000'
 
   # Supabase Studio (Development)
   studio:
@@ -125,8 +118,6 @@ services:
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU}
       STUDIO_PG_META_URL: postgres://postgres:${DB_PASSWORD:-apex_secure_password_2024}@db:5432/postgres
       POSTGRES_PASSWORD: ${DB_PASSWORD:-apex_secure_password_2024}
-    ports:
-      - '54325:3000'
     depends_on:
       db:
         condition: service_healthy
@@ -145,8 +136,6 @@ services:
       NODE_ENV: production
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       SITE_URL: ${SITE_URL:-http://localhost:3000}
-    ports:
-      - '3000:80'
     depends_on:
       db:
         condition: service_healthy
